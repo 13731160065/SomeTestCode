@@ -156,7 +156,7 @@
     //混音操作，降低音量
     //混音输入参数
     AVMutableAudioMixInputParameters * audioMixInputParam = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:orgPAudioTrack];
-    [audioMixInputParam setVolume:0.2f atTime:kCMTimeZero];
+    [audioMixInputParam setVolume:0.1f atTime:kCMTimeZero];
     //混音处理者
     AVMutableAudioMix * audioMixHandler = [AVMutableAudioMix audioMix];
     audioMixHandler.inputParameters = @[audioMixInputParam];//设置输入参数

@@ -273,9 +273,10 @@
     }
     
     [WZZVideoHandler remixAVWithVideoModel:videoModel audioModelArray:arr outURL:outUrl successBlock:^{
-        [videoView stop];
         [videoView reloadWithUrl:outUrl];
-        [videoView play];
+        [videoView loadVideoReadyBlock:^{
+            [videoView play];
+        }];
     } failedBlock:^(NSError *error) {
         
     }];
