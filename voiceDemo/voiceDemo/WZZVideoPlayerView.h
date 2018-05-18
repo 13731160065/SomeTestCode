@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @import UIKit;
+@import CoreMedia;
 
 @interface WZZVideoPlayerView : UIView
 
@@ -15,6 +16,11 @@
  视频url
  */
 @property (nonatomic, strong) NSURL * url;
+
+/**
+ 音量，0静音，1正常
+ */
+@property (nonatomic, assign) double videoVolume;
 
 /**
  是否自动播放，默认是
@@ -59,7 +65,7 @@
 /**
  播放结束
  */
-- (void)finishedPlay:(void(^)())aBlock;
+- (void)finishedPlay:(void(^)(CMTime))aBlock;
 
 /**
  初始化
@@ -88,7 +94,7 @@
         loadVideoReadyBlock:(void(^)())loadVideoReadyBlock
          needResetViewBlock:(void(^)(WZZVideoPlayerView * needResetThisView))nrvBlock;
 
-- (void)seekToTime:(NSInteger)time;
+- (void)seekToTime:(CMTime)time;
 
 @end
 

@@ -156,7 +156,7 @@
     //混音操作，降低音量
     //混音输入参数
     AVMutableAudioMixInputParameters * audioMixInputParam = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:orgPAudioTrack];
-    [audioMixInputParam setVolume:0.3f atTime:kCMTimeZero];
+    [audioMixInputParam setVolume:0.2f atTime:kCMTimeZero];
     //混音处理者
     AVMutableAudioMix * audioMixHandler = [AVMutableAudioMix audioMix];
     audioMixHandler.inputParameters = @[audioMixInputParam];//设置输入参数
@@ -167,6 +167,7 @@
     session.outputURL = outURL;
     session.shouldOptimizeForNetworkUse = YES;//尽可能优化以供网络使用
     session.audioMix = audioMixHandler;
+    
     [session exportAsynchronouslyWithCompletionHandler:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completeBlock) {

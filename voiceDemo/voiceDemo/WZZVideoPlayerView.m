@@ -9,6 +9,7 @@
 #import "WZZVideoPlayerView.h"
 #import <objc/runtime.h>
 @import AVFoundation;
+@import CoreMedia;
 
 #define PLAYBUTTON @"暂停icon"
 #define PAUSEBUTTON @"播放icon"
@@ -62,6 +63,7 @@ const CGFloat toolBorder = 8;
     if (self) {
         isEnd = YES;
         _autoPlay = YES;
+        
     }
     return self;
 }
@@ -192,22 +194,22 @@ const CGFloat toolBorder = 8;
     }
 }
 
-- (void)seekToTime:(NSInteger)time {
-    timeSliderView.value = time * NSEC_PER_SEC;
+- (void)seekToTime:(CMTime)time {
+    timeSliderView.value = CMTimeGetSeconds(time);
     
     //停止
     [timer invalidate];
     [self removeGestureRecognizer:oneTap];
     
-    //value改变
-    int oSec = (int)time;
+    //时间文字改变
+    int oSec = (int)timeSliderView.value;
     int hour = oSec/3600;
     int min = oSec%3600/60;
     int sec = oSec%60;
     [nowTimeLabel setText:[NSString stringWithFormat:@"%02d:%02d:%02d", hour, min, sec]];
     
     //播放
-    [player seekToTime:CMTimeMakeWithSeconds(time, 60)];
+    [player seekToTime:time];
     timer = [self startTimer];
     oneTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selfTap:)];
     [self addGestureRecognizer:oneTap];
@@ -451,6 +453,10 @@ const CGFloat toolBorder = 8;
             _finishedPlayBlock();
         }
     }
+}
+
+- (void)setVideoVolume:(double)videoVolume {
+    player.volume = videoVolume;
 }
 
 //改变系统声音

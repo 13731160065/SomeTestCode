@@ -19,6 +19,9 @@
 		71301F2E20AD288B0030DAB0 /* WZZVideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71301F2C20AD288A0030DAB0 /* WZZVideoPlayerView.m */; };
 		71301F3020AD28A40030DAB0 /* 复仇者联盟2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 71301F2F20AD28990030DAB0 /* 复仇者联盟2.mp4 */; };
 		71301F3320AD2E740030DAB0 /* WZZVideoHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 71301F3220AD2E740030DAB0 /* WZZVideoHandler.m */; };
+		7157D0D220ADDC4900F4D9D0 /* fff.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 7157D0D120ADDAFD00F4D9D0 /* fff.mp4 */; };
+		71D66DF820AE6E0E00331F63 /* eee.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 71D66DF720AE6E0E00331F63 /* eee.MOV */; };
+		71D66DFC20AE7DF900331F63 /* 720p.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 71D66DFB20AE7DF800331F63 /* 720p.MOV */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +64,9 @@
 		71301F2F20AD28990030DAB0 /* 复仇者联盟2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "复仇者联盟2.mp4"; sourceTree = "<group>"; };
 		71301F3120AD2E740030DAB0 /* WZZVideoHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZVideoHandler.h; sourceTree = "<group>"; };
 		71301F3220AD2E740030DAB0 /* WZZVideoHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZVideoHandler.m; sourceTree = "<group>"; };
+		7157D0D120ADDAFD00F4D9D0 /* fff.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = fff.mp4; sourceTree = "<group>"; };
+		71D66DF720AE6E0E00331F63 /* eee.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = eee.MOV; sourceTree = "<group>"; };
+		71D66DFB20AE7DF800331F63 /* 720p.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 720p.MOV; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +126,9 @@
 				71301F2D20AD288B0030DAB0 /* WZZVideoPlayerView.h */,
 				71301F2C20AD288A0030DAB0 /* WZZVideoPlayerView.m */,
 				71301EFE20AD17870030DAB0 /* Main.storyboard */,
+				71D66DFB20AE7DF800331F63 /* 720p.MOV */,
+				71D66DF720AE6E0E00331F63 /* eee.MOV */,
+				7157D0D120ADDAFD00F4D9D0 /* fff.mp4 */,
 				71301F2F20AD28990030DAB0 /* 复仇者联盟2.mp4 */,
 				71301F2A20AD1BAB0030DAB0 /* -Rissa mento.mp3 */,
 				71301F0120AD17870030DAB0 /* Assets.xcassets */,
@@ -254,7 +263,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71D66DF820AE6E0E00331F63 /* eee.MOV in Resources */,
+				71D66DFC20AE7DF900331F63 /* 720p.MOV in Resources */,
 				71301F2B20AD1BAC0030DAB0 /* -Rissa mento.mp3 in Resources */,
+				7157D0D220ADDC4900F4D9D0 /* fff.mp4 in Resources */,
 				71301F3020AD28A40030DAB0 /* 复仇者联盟2.mp4 in Resources */,
 				71301F0520AD17870030DAB0 /* LaunchScreen.storyboard in Resources */,
 				71301F0220AD17870030DAB0 /* Assets.xcassets in Resources */,
