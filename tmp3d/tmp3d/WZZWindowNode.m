@@ -41,11 +41,12 @@
     //初始化window
     self.hasBorder = hasBorder;
     if (hasBorder) {
-        if (points.count == 3) {
-            [self makeBorder3WithPoints:points];
-        } else {
-            [self makeBorderWithPoints:points];
-        }
+//        if (points.count == 3) {
+//            [self makeBorder3WithPoints:points];
+//        } else {
+//            [self makeBorderWithPoints:points];
+//        }
+        [self makeAnyBorderWithPoints:points];
     } else {
         self.insetPoints = [NSArray arrayWithArray:points];
     }
@@ -54,6 +55,15 @@
     //初始化window的insideNode
     WZZInsideNode * InsideNode = [[WZZInsideNode alloc] initInsideWithWindow:self];
     [self addChildNode:InsideNode];
+}
+
+- (void)makeAnyBorderWithPoints:(NSArray *)points {
+    if (points.count < 3) {
+        return;
+    }
+    
+    [WZZShapeHandler showPointWithNode:self points:points color:[UIColor redColor]];
+    [WZZShapeHandler showPointWithNode:self points:[WZZShapeHandler makeAnyBorder2WithLinkArray:[WZZLinkedArray arrayWithArray:points]] color:[UIColor greenColor]];
 }
 
 //创建4边形边框

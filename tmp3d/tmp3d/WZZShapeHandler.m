@@ -21,7 +21,9 @@ CGFloat angleBetweenLines(CGPoint line1Start, CGPoint line1End, CGPoint line2Sta
     CGFloat d = line2End.y - line2Start.y;
     CGFloat rads = acos(((a*c) + (b*d)) / ((sqrt(a*a + b*b)) * (sqrt(c*c + d*d))));
     //弧度转角度
-    NSLog(@"jd>%@", @(radiansToDegrees(rads)));
+    NSLog(@"line1>%@, %@", [NSValue valueWithCGPoint:line1Start], [NSValue valueWithCGPoint:line1End]);
+    NSLog(@"line2>%@, %@", [NSValue valueWithCGPoint:line2Start], [NSValue valueWithCGPoint:line2End]);
+    NSLog(@"jd>%@º, %@", @(radiansToDegrees(rads)), @(rads));
     
     return rads;
 }
@@ -168,6 +170,169 @@ static WZZShapeHandler * wzzShapeHandler;
              [NSValue valueWithCGPoint:mp2_],
              [NSValue valueWithCGPoint:mp3_],
              ];
+}
+
+void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
+    NSMutableArray *bezierPoints = (__bridge NSMutableArray *)info;
+    CGPathElementType type = element->type;
+    CGPoint *points = element->points;
+    
+    if (type != kCGPathElementCloseSubpath) {
+        [bezierPoints addObject:[NSValue valueWithCGPoint:points[0]]];
+        if ((type != kCGPathElementAddLineToPoint) && (type != kCGPathElementMoveToPoint)) {
+            [bezierPoints addObject:[NSValue valueWithCGPoint:points[1]]];
+        }
+    }
+    
+    if (type == kCGPathElementAddCurveToPoint) {
+        [bezierPoints addObject:[NSValue valueWithCGPoint:points[1]]];
+    }
+}
+
++ (NSArray *)getPointsFromBezierPath:(UIBezierPath *)path {
+    NSMutableArray * points = [NSMutableArray array];
+    CGPathApply(path.CGPath, (__bridge void *)points, __getPointsFromBezierPath);
+    return points;
+}
+
+//计算多边形边框
++ (NSArray <NSValue *>*)makeAnyBorderWithLinkArray:(WZZLinkedArray *)linkArray {
+    //至少3个点
+    if (linkArray.array.count < 3) {
+        return nil;
+    }
+    
+    const CGFloat l = 3.0f;//边框宽度
+    CGPoint p1 = WZZShapeHandler_LinkedObjectToPoint(linkArray.array.firstObject);
+    CGPoint p2 = WZZShapeHandler_LinkedObjectToPoint(linkArray.array.firstObject.nextObj);
+    CGPoint pn_1 = WZZShapeHandler_LinkedObjectToPoint(linkArray.array.lastObject.lastObj);
+    CGPoint pn = WZZShapeHandler_LinkedObjectToPoint(linkArray.array.lastObject);
+    CGFloat angle1 = angleBetweenLines(p1, p2, p1, pn)/2.0f;
+    CGFloat angle2 = angleBetweenLines(pn, p1, pn, pn_1)/2.0f;
+    CGFloat m = pn.x;
+    CGFloat m2 = 0.0f;
+    CGFloat scale = 0.0f;
+    CGFloat a1 = 0.0f;
+    CGFloat a2 = 0.0f;
+    
+    //保证弧度大于0小于90度
+    angle1 = fabs(angle1);
+    angle2 = fabs(angle2);
+    if (angle1 > M_PI_2) {
+        angle1 = M_PI-angle1;
+    }
+    if (angle2 > M_PI_2) {
+        angle2 = M_PI-angle2;
+    }
+    
+    a1 = fabs(l/tan(angle1));
+    a2 = fabs(l/tan(angle2));
+    
+    m2 = m-a1-a2;
+    scale = m2/m;
+    
+    UIBezierPath * path = [UIBezierPath bezierPath];
+    [path moveToPoint:CGPointZero];
+    for (int i = 1; i < linkArray.array.count; i++) {
+        [path addLineToPoint:WZZShapeHandler_LinkedObjectToPoint(linkArray.array[i])];
+    }
+    NSLog(@">>>>>>path1:%@", path);
+    [path applyTransform:CGAffineTransformMakeScale(scale, scale)];
+    NSLog(@">>>>>>path2:%@", path);
+    NSArray * pathPointsArr = [self getPointsFromBezierPath:path];
+    NSMutableArray * okPath = [NSMutableArray array];
+    for (int i = 0; i < pathPointsArr.count; i++) {
+        NSValue * value = pathPointsArr[i];
+        [okPath addObject:[NSValue valueWithCGPoint:CGPointMake(value.CGPointValue.x+a1, value.CGPointValue.y+l)]];
+    }
+    
+    return okPath;
+}
+
+//计算多边形边框
++ (NSArray <NSValue *>*)makeAnyBorder2WithLinkArray:(WZZLinkedArray *)linkArray {
+    //至少3个点
+    if (linkArray.array.count < 3) {
+        return nil;
+    }
+    
+    const CGFloat l = 3.0f;//边框宽度
+    
+    NSMutableArray * okArray = [NSMutableArray array];
+    for (int i = 1; i < linkArray.array.count-1; i++) {
+#if 1
+        NSLog(@"------------------------------");
+        WZZLinkedObject * pa = linkArray.array[i];
+        CGFloat paAngle_2 = angleBetweenLines(WZZShapeHandler_LinkedObjectToPoint(pa), WZZShapeHandler_LinkedObjectToPoint(pa.nextObj), WZZShapeHandler_LinkedObjectToPoint(pa), WZZShapeHandler_LinkedObjectToPoint(pa.lastObj))/2.0f;
+#error lll
+        CGFloat AOXAngle = angleBetweenLines(WZZShapeHandler_LinkedObjectToPoint(pa.lastObj), WZZShapeHandler_LinkedObjectToPoint(pa), WZZShapeHandler_LinkedObjectToPoint(pa.lastObj), CGPointMake(10000, WZZShapeHandler_LinkedObjectToPoint(pa.lastObj).y));
+#else
+        NSLog(@"------------------------------");
+        WZZLinkedObject * pa = linkArray.array[i];
+        CGFloat paAngle_2 = angleBetweenLines(WZZShapeHandler_LinkedObjectToPoint(pa.lastObj), WZZShapeHandler_LinkedObjectToPoint(pa), WZZShapeHandler_LinkedObjectToPoint(pa.nextObj), WZZShapeHandler_LinkedObjectToPoint(pa))/2.0f;
+        
+        CGFloat AOXAngle = angleBetweenLines(WZZShapeHandler_LinkedObjectToPoint(pa), WZZShapeHandler_LinkedObjectToPoint(pa.lastObj), CGPointMake(10000, WZZShapeHandler_LinkedObjectToPoint(pa.lastObj).y), WZZShapeHandler_LinkedObjectToPoint(pa.lastObj));
+#endif
+        //计算AA'X夹角，化简完为AOXAngle+paAngle_2，其实两个三角形相似
+//        CGFloat AA_XAngle = ((M_PI_2+AOXAngle)-(M_PI_2-paAngle_2)*2)+(M_PI_2-paAngle_2);
+//        NSLog(@"ffff%lf", AA_XAngle);
+        CGFloat AA_XAngle = AOXAngle+paAngle_2;
+        NSLog(@"AA'X>%lf", AA_XAngle);
+    
+        CGFloat AA_ = l/sin(paAngle_2);
+        CGFloat AH = AA_*sin(AA_XAngle);
+        CGFloat A_H = AA_*cos(AA_XAngle);
+        NSLog(@"AA_:%lf, A':(%lf, %lf)", AA_, A_H, AH);
+        
+        //调整补充象限判断
+//        CGFloat XiangXianAddAngle = angleBetweenLines(pa.thisObj, WZZShapeHandler_LinkedObjectToPoint(<#linkObj#>), <#CGPoint line2Start#>, <#CGPoint line2End#>)
+        
+        //象限
+        int XiangXian = 0;
+        if (AA_XAngle < M_PI_2) {
+            XiangXian = 1;
+        } else if (AA_XAngle < M_PI) {
+            XiangXian = 2;
+        } else if (AA_XAngle < M_PI+M_PI_2) {
+            XiangXian = 3;
+        } else {
+            XiangXian = 4;
+        }
+        
+        CGPoint pA_ = CGPointZero;
+        switch (XiangXian) {
+            case 1:
+            {
+                pA_ = CGPointMake(WZZShapeHandler_LinkedObjectToPoint(pa).x-A_H, WZZShapeHandler_LinkedObjectToPoint(pa).y-AH);
+            }
+                break;
+            case 2:
+            {
+                pA_ = CGPointMake(WZZShapeHandler_LinkedObjectToPoint(pa).x-A_H, WZZShapeHandler_LinkedObjectToPoint(pa).y-AH);
+            }
+                break;
+            case 3:
+            {
+                pA_ = CGPointMake(WZZShapeHandler_LinkedObjectToPoint(pa).x+A_H, WZZShapeHandler_LinkedObjectToPoint(pa).y+AH);
+            }
+                break;
+            case 4:
+            {
+                pA_ = CGPointMake(WZZShapeHandler_LinkedObjectToPoint(pa).x-A_H, WZZShapeHandler_LinkedObjectToPoint(pa).y+AH);
+            }
+                break;
+                
+            default:
+            {
+                
+            }
+                break;
+        }
+        
+        [okArray addObject:[NSValue valueWithCGPoint:pA_]];
+    }
+    
+    return okArray;
 }
 
 //显示点

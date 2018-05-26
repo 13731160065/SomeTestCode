@@ -57,16 +57,17 @@ typedef struct {
     
     const CGFloat widHei = 20.0f;
     
-    WZZWindowNode * node233 = [WZZWindowNode nodeWithLeftHeight:widHei rightHeight:widHei/2 downWidth:widHei hasBorder:YES];
-    [scene.rootNode addChildNode:node233];
-//    NSMutableArray * arr = [NSMutableArray array];
-//    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, 0)]];
-//    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, widHei)]];
-//    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei, widHei/2.0f)]];
-//    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei, 0)]];
-//    WZZWindowNode * node233 = [WZZWindowNode nodeWithPoints:arr hasBorder:YES];
+//    WZZWindowNode * node233 = [WZZWindowNode nodeWithLeftHeight:widHei rightHeight:widHei/2 downWidth:widHei hasBorder:YES];
 //    [scene.rootNode addChildNode:node233];
-//    [node233 setPosition:SCNVector3Make(-widHei/2.0f, -widHei/2.0f, 0)];
+    NSMutableArray * arr = [NSMutableArray array];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, 0)]];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, widHei)]];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei/2.0f, widHei+10)]];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei+10, widHei/3)]];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei, 0)]];
+    WZZWindowNode * node233 = [WZZWindowNode nodeWithPoints:arr hasBorder:YES];
+    [scene.rootNode addChildNode:node233];
+    [node233 setPosition:SCNVector3Make(-widHei/2.0f, -widHei/2.0f, 0)];
     
     //旧的
     textureArr = [NSMutableArray array];

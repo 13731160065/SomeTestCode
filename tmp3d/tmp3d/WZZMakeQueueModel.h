@@ -12,6 +12,16 @@
 @interface WZZMakeQueueModel : NSObject
 
 /**
+ 切割方向
+ */
+@property (nonatomic, assign) WZZInsideNode_HV cutHV;
+
+/**
+ 填充内容
+ */
+@property (nonatomic, strong) id fillContents;
+
+/**
  操作动作
  */
 @property (nonatomic, assign) WZZInsideNode_Action action;
@@ -25,5 +35,12 @@
  操作node
  */
 @property (nonatomic, strong) SCNNode * actionToNode;
+
+/**
+ 重做这一步
+
+ @param reloadAction 重做的动作回调
+ */
+- (void)reloadAction:(void(^)(WZZMakeQueueModel * makeModel))reloadAction;
 
 @end

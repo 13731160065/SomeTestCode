@@ -81,6 +81,12 @@ typedef enum : NSUInteger {
 + (NSArray <NSValue *>*)makeBorder3WithLinkArray:(WZZLinkedArray *)linkArray
                                           border:(CGFloat)border;
 
+//多边形
++ (NSArray <NSValue *>*)makeAnyBorderWithLinkArray:(WZZLinkedArray *)linkArray;
+
+//计算多边形边框
++ (NSArray <NSValue *>*)makeAnyBorder2WithLinkArray:(WZZLinkedArray *)linkArray;
+
 /**
  测试时快速显示点
 
