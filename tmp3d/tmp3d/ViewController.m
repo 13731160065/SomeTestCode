@@ -11,6 +11,7 @@
 #import "WZZWindowNode.h"
 #import "WZZ2DButtonNode.h"
 #import "WZZShapeHandler.h"
+#import "DoorWindowCalculationFormulaObjective.h"
 @import UIKit;
 @import SceneKit;
 
@@ -55,7 +56,7 @@ typedef struct {
 //    scene.background.contents = [UIColor blackColor];
     
     
-    const CGFloat widHei = 20.0f;
+    const CGFloat widHei = WZZShapeHandler_mm_m(1.5);
     
 #if 1
 //    WZZWindowNode * node233 = [WZZWindowNode nodeWithLeftHeight:widHei rightHeight:widHei/2 downWidth:widHei hasBorder:YES];
@@ -95,6 +96,39 @@ typedef struct {
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [scnView addGestureRecognizer:tap];
+}
+
+- (void)setupDoorObj {
+    DoorWindowCalculationFormulaObjective * doorHandler = [DoorWindowCalculationFormulaObjective share];
+    
+    // 框小面
+    doorHandler.circleSmallFace = 47.0f;
+    // 框大面
+    doorHandler.circleLargeFace = 76.0f;
+    
+    // 中梃小面
+    doorHandler.centreSmallFace = 47.0f;
+    // 中梃大面
+    doorHandler.centreLargeFace = 106.0f;
+    
+    // 转向框小面
+    doorHandler.toTurnToCircleSmallFace = 71.0f;
+    // 转向框大面
+    doorHandler.toTurnToCircleLargeFace = 93.0f;
+    
+    // 扇小面扣槽尺寸
+    doorHandler.fanSmallGroovesFace = 71.0f;
+    // 扇大面扣槽尺寸
+    doorHandler.fanLargeGroovesFace = 93.0f;
+    
+    // 计算玻璃时一个不确定数。需要后台返回
+    doorHandler.galssVariable = 15.0f;
+    // 计算扇玻璃时一个不确定数，需要按照后台返回来的
+    doorHandler.fanGalssVariable = 15.0f;
+    // 扇尺寸单边搭接
+    doorHandler.fanVariable = 12.0f;
+    // 中梃插入量
+    doorHandler.centreVariable = 9.0f;
 }
 
 - (void)handleTap:(UIGestureRecognizer*)gestureRecognize
@@ -183,7 +217,7 @@ typedef struct {
         obj.geometry.firstMaterial.diffuse.contents = textureArr[textureIdx];
     }];
     [[WZZShapeHandler shareInstance] getRectAllBorderData:^(id borderData) {
-        
+        NSLog(@"\n压线尺寸:\n%@\n玻璃尺寸\n%@\n中挺尺寸有点问题\n%@", borderData[@"line"], borderData[@"glass"], borderData[@"zhongTing"]);
     }];
 }
 - (IBAction)hvChange:(UISwitch *)sender {

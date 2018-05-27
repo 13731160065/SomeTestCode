@@ -21,6 +21,9 @@
 #define WZZShapeHandler_LinkedObjectToPoint(linkObj) [linkObj.thisObj CGPointValue]
 #define WZZShapeHandlerTexture_Border @"lvhejin.jpg"
 #define WZZShapeHandlerTexture_Fill @"boli.jpg"
+#define WZZShapeHandler_mm_cm(cm) ((double)(cm)*10.0f)
+#define WZZShapeHandler_mm_dm(dm) ((double)(dm)*100.0f)
+#define WZZShapeHandler_mm_m(m) ((double)(m)*1000.0f)
 
 typedef enum : NSUInteger {
     WZZInsideNodeContentType_None = 0,//没东西

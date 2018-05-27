@@ -10,7 +10,8 @@
 #import "WZZWindowNode.h"
 #import "WZZZhongTingNode.h"
 
-#define WZZInsideNode_BorderWidth 0.5f
+//中挺宽度
+#define WZZInsideNode_BorderWidth WZZShapeHandler_mm_cm(5)
 
 @implementation WZZInsideNode
 

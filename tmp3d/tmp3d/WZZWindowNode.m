@@ -12,7 +12,7 @@
 #import "WZZShapeHandler.h"
 #import "WZZWindowBorderTingNode.h"
 
-#define WZZWindowNode_BorderWidth 0.7f
+#define WZZWindowNode_BorderWidth WZZShapeHandler_mm_cm(7)
 
 @implementation WZZWindowNode
 

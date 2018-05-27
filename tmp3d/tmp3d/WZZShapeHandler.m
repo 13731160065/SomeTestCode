@@ -11,8 +11,15 @@
 #import "WZZWindowNode.h"
 #import "WZZWindowBorderTingNode.h"
 #import "WZZZhongTingNode.h"
+#import "DoorWindowCalculationFormulaObjective.h"
 @import UIKit;
 @import SceneKit;
+
+typedef enum : NSUInteger {
+    WZZShapeHandler_FromTo_BToB,//边到边
+    WZZShapeHandler_FromTo_BToC,//边到中
+    WZZShapeHandler_FromTo_CToC//中到中
+} WZZShapeHandler_FromTo;
 
 #define radiansToDegrees(x) (180.0 * x / M_PI)
 
@@ -356,11 +363,18 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
     wzzShapeHandler = [[WZZShapeHandler alloc] init];
 }
 
-//获取所有数据
+//获取rect所有数据
 - (void)getRectAllBorderData:(void (^)(id))borderDataBlock {
     WZZWindowNode * rootWindow = self.allWindows.firstObject;
     NSArray * windowsArray = [NSArray arrayWithArray:self.allUpWindows];
-    NSMutableArray * allDataArr = [NSMutableArray array];
+    
+    NSMutableDictionary * allDataDic = [NSMutableDictionary dictionary];
+    NSMutableArray * lineArr = [NSMutableArray array];
+    NSMutableArray * glassArr = [NSMutableArray array];
+    NSMutableArray * zhongTingArr = [NSMutableArray array];
+    allDataDic[@"line"] = lineArr;
+    allDataDic[@"glass"] = glassArr;
+    allDataDic[@"zhongTing"] = zhongTingArr;
     for (int i = 0; i < windowsArray.count; i++) {
         WZZWindowNode * windowNode = windowsArray[i];
         SCNVector3 upTV3 = SCNVector3Make(windowNode.borderUpTing.startPoint.x, windowNode.borderUpTing.startPoint.y, 0);
@@ -390,39 +404,78 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         NSLog(@"T(%lf, %lf)", hengTing, shuTing);
         
         //计算数据
-        //计算两挺之间距离的类型，0框到框，1框到中，2中到中
-        int shuTingType = 0;
-        int hengTingType = 0;
+        //计算两挺之间距离的类型
+        WZZShapeHandler_FromTo shuTingType = 0;
+        WZZShapeHandler_FromTo hengTingType = 0;
         //纵向
         if ([windowNode.borderUpTing isKindOfClass:[WZZWindowBorderTingNode class]] && [windowNode.borderDownTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
-            //框到框
-            shuTingType = 0;
-            NSLog(@"竖:框到框");
+            //边到边
+            shuTingType = WZZShapeHandler_FromTo_BToB;
+            NSLog(@"竖:边到边");
         } else if ([windowNode.borderUpTing isKindOfClass:[WZZWindowBorderTingNode class]] || [windowNode.borderDownTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
-            //框到中
-            shuTingType = 1;
-            NSLog(@"竖:框到边");
+            //边到中
+            shuTingType = WZZShapeHandler_FromTo_BToC;
+            NSLog(@"竖:边到中");
         } else {
             //中到中
-            shuTingType = 2;
-            NSLog(@"竖:边到边");
+            shuTingType = WZZShapeHandler_FromTo_CToC;
+            NSLog(@"竖:中到中");
         }
         //横向
         if ([windowNode.borderLeftTing isKindOfClass:[WZZWindowBorderTingNode class]] && [windowNode.borderRightTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
-            //框到框
-            hengTingType = 0;
-            NSLog(@"横:框到框");
+            //边到边
+            hengTingType = WZZShapeHandler_FromTo_BToB;
+            NSLog(@"横:边到边");
         } else if ([windowNode.borderLeftTing isKindOfClass:[WZZWindowBorderTingNode class]] || [windowNode.borderRightTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
-            //框到中
-            hengTingType = 1;
-            NSLog(@"横:框到边");
+            //边到中
+            hengTingType = WZZShapeHandler_FromTo_BToC;
+            NSLog(@"横:边到中");
         } else {
             //中到中
-            hengTingType = 2;
-            NSLog(@"横:边到边");
+            hengTingType = WZZShapeHandler_FromTo_CToC;
+            NSLog(@"横:中到中");
+        }
+        
+        
+        //计算尺寸
+        CalculationFormula hCalType = (CalculationFormula)hengTingType;
+        CalculationFormula vCalType = (CalculationFormula)shuTingType;
+        //压线尺寸
+        CGFloat lineH = [DoorWindowCalculationFormulaObjective DoorWindowCircleCalculationFormula:hCalType distance:hengTing];
+        CGFloat lineV = [DoorWindowCalculationFormulaObjective DoorWindowCircleCalculationFormula:vCalType distance:shuTing];
+        [lineArr addObject:[NSString stringWithFormat:@"%.2lf", lineH]];
+        [lineArr addObject:[NSString stringWithFormat:@"%.2lf", lineH]];
+        [lineArr addObject:[NSString stringWithFormat:@"%.2lf", lineV]];
+        [lineArr addObject:[NSString stringWithFormat:@"%.2lf", lineV]];
+        
+        //玻璃尺寸
+        CGFloat glassH = [DoorWindowCalculationFormulaObjective DoorWindowGlassCalculationFormula:hCalType distance:hengTing];
+        CGFloat glassV = [DoorWindowCalculationFormulaObjective DoorWindowGlassCalculationFormula:vCalType distance:shuTing];
+        [glassArr addObject:[NSString stringWithFormat:@"%.2lf", glassH]];
+        [glassArr addObject:[NSString stringWithFormat:@"%.2lf", glassV]];
+        
+        //中挺尺寸
+        if ([windowNode.borderUpTing isKindOfClass:[WZZZhongTingNode class]]) {
+            CGFloat tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:hCalType distance:hengTing];
+            [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
+        }
+        if ([windowNode.borderDownTing isKindOfClass:[WZZZhongTingNode class]]) {
+            CGFloat tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:hCalType distance:hengTing];
+            [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
+        }
+        if ([windowNode.borderLeftTing isKindOfClass:[WZZZhongTingNode class]]) {
+            CGFloat tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:vCalType distance:shuTing];
+            [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
+        }
+        if ([windowNode.borderRightTing isKindOfClass:[WZZZhongTingNode class]]) {
+            CGFloat tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:vCalType distance:shuTing];
+            [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
         }
     }
     
+    if (borderDataBlock) {
+        borderDataBlock(allDataDic);
+    }
 }
 
 #pragma mark - 属性
