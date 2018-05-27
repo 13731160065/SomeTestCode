@@ -57,8 +57,12 @@ typedef struct {
     
     const CGFloat widHei = 20.0f;
     
+#if 1
 //    WZZWindowNode * node233 = [WZZWindowNode nodeWithLeftHeight:widHei rightHeight:widHei/2 downWidth:widHei hasBorder:YES];
 //    [scene.rootNode addChildNode:node233];
+    WZZWindowNode * node233 = [WZZWindowNode nodeWithHeight:widHei width:widHei hasBorder:YES];
+    [scene.rootNode addChildNode:node233];
+#else
     NSMutableArray * arr = [NSMutableArray array];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, 0)]];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, widHei)]];
@@ -66,6 +70,8 @@ typedef struct {
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei+10, widHei/3)]];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei, 0)]];
     WZZWindowNode * node233 = [WZZWindowNode nodeWithPoints:arr hasBorder:YES];
+#endif
+    node233.isRootWindow = YES;
     [scene.rootNode addChildNode:node233];
     [node233 setPosition:SCNVector3Make(-widHei/2.0f, -widHei/2.0f, 0)];
     
@@ -175,6 +181,9 @@ typedef struct {
 - (void)changeClick {
     [nodeDic.allValues enumerateObjectsUsingBlock:^(SCNNode * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         obj.geometry.firstMaterial.diffuse.contents = textureArr[textureIdx];
+    }];
+    [[WZZShapeHandler shareInstance] getRectAllBorderData:^(id borderData) {
+        
     }];
 }
 - (IBAction)hvChange:(UISwitch *)sender {

@@ -4,11 +4,15 @@
 //
 //  Created by 王泽众 on 2018/5/24.
 //  Copyright © 2018年 王泽众. All rights reserved.
-//
+//  处理整个门窗工程的类
+/*
+    所有路径、点数组，均按从(0,0)开始，逐个排列
+ */
 
 #import <Foundation/Foundation.h>
 #import "WZZLinkedArray.h"
 
+@class WZZWindowNode;
 @class WZZMakeQueueModel;
 @import UIKit;
 @import SceneKit;
@@ -46,6 +50,11 @@ typedef enum : NSUInteger {
 @interface WZZShapeHandler : NSObject
 
 /**
+ 根节点
+ */
+@property (nonatomic, strong) SCNNode * rootNode;
+
+/**
  内容切割方向
  */
 @property (nonatomic, assign) WZZInsideNode_HV insideHV;
@@ -61,11 +70,28 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSMutableArray <WZZMakeQueueModel *>* actionQueueArray;
 
 /**
+ 所有框
+ 包括层叠的大小框，需要进行筛选
+ 如果要重制请注意清空该数组
+ */
+@property (nonatomic, strong) NSMutableArray <WZZWindowNode *>* allWindows;
+
+/**
+ 所有在最上层的window
+ */
+@property (nonatomic, strong, readonly) NSArray <WZZWindowNode *>* allUpWindows;
+
+/**
  单例
 
  @return 实例
  */
 + (instancetype)shareInstance;
+
+/**
+ 重置handler
+ */
++ (void)resetHandler;
 
 /**
  创建边框，计算内边框位置
@@ -97,5 +123,10 @@ typedef enum : NSUInteger {
 + (void)showPointWithNode:(SCNNode *)node
                    points:(NSArray <NSValue *>*)points
                     color:(UIColor *)color;
+
+/**
+ 获取矩形所有边框数据
+ */
+- (void)getRectAllBorderData:(void(^)(id borderData))borderDataBlock;
 
 @end

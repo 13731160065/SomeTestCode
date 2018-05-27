@@ -26,6 +26,8 @@
 		71C6DF6F20B2A0CE005085F9 /* metal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71C6DF6E20B2A0CE005085F9 /* metal.jpg */; };
 		71C6DF7120B2A141005085F9 /* metal2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71C6DF7020B2A140005085F9 /* metal2.jpg */; };
 		71C6DF7420B2B591005085F9 /* WZZARManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 71C6DF7220B2B591005085F9 /* WZZARManager.m */; };
+		71CAB8FF20BABFC600DDF03C /* WZZWindowBorderTingNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71CAB8FE20BABFC600DDF03C /* WZZWindowBorderTingNode.m */; };
+		71CAB90220BABFDD00DDF03C /* WZZZhongTingNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71CAB90120BABFDD00DDF03C /* WZZZhongTingNode.m */; };
 		71DDFE0F20B7D7AD00695935 /* boli.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71DDFE0E20B7D7AC00695935 /* boli.jpg */; };
 		71DDFE1120B7DE5D00695935 /* lvhejin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71DDFE1020B7DE5D00695935 /* lvhejin.jpg */; };
 		71DDFE1720B7F06E00695935 /* WZZTingNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DDFE1620B7F06E00695935 /* WZZTingNode.m */; };
@@ -83,6 +85,10 @@
 		71C6DF7020B2A140005085F9 /* metal2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = metal2.jpg; sourceTree = "<group>"; };
 		71C6DF7220B2B591005085F9 /* WZZARManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WZZARManager.m; sourceTree = "<group>"; };
 		71C6DF7320B2B591005085F9 /* WZZARManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WZZARManager.h; sourceTree = "<group>"; };
+		71CAB8FD20BABFC600DDF03C /* WZZWindowBorderTingNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZWindowBorderTingNode.h; sourceTree = "<group>"; };
+		71CAB8FE20BABFC600DDF03C /* WZZWindowBorderTingNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZWindowBorderTingNode.m; sourceTree = "<group>"; };
+		71CAB90020BABFDD00DDF03C /* WZZZhongTingNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZZhongTingNode.h; sourceTree = "<group>"; };
+		71CAB90120BABFDD00DDF03C /* WZZZhongTingNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZZhongTingNode.m; sourceTree = "<group>"; };
 		71DDFE0E20B7D7AC00695935 /* boli.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = boli.jpg; sourceTree = "<group>"; };
 		71DDFE1020B7DE5D00695935 /* lvhejin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = lvhejin.jpg; sourceTree = "<group>"; };
 		71DDFE1520B7F06E00695935 /* WZZTingNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZTingNode.h; sourceTree = "<group>"; };
@@ -153,6 +159,10 @@
 				71647BFE20B62DFB0077728E /* WZZInsideNode.m */,
 				71DDFE1520B7F06E00695935 /* WZZTingNode.h */,
 				71DDFE1620B7F06E00695935 /* WZZTingNode.m */,
+				71CAB8FD20BABFC600DDF03C /* WZZWindowBorderTingNode.h */,
+				71CAB8FE20BABFC600DDF03C /* WZZWindowBorderTingNode.m */,
+				71CAB90020BABFDD00DDF03C /* WZZZhongTingNode.h */,
+				71CAB90120BABFDD00DDF03C /* WZZZhongTingNode.m */,
 				717ED2B020B6AA280002AC35 /* WZZShapeHandler.h */,
 				717ED2B120B6AA280002AC35 /* WZZShapeHandler.m */,
 				7153838420B80EDC00A9DB3A /* WZZMakeQueueModel.h */,
@@ -334,7 +344,9 @@
 				7191A85520AC43F300F729A4 /* main.m in Sources */,
 				71647C0220B630710077728E /* WZZ2DButtonNode.m in Sources */,
 				7146B05820B55B6D0097A23D /* WZZWindowNode.m in Sources */,
+				71CAB8FF20BABFC600DDF03C /* WZZWindowBorderTingNode.m in Sources */,
 				710A675720B67305001046F5 /* WZZLinkedArray.m in Sources */,
+				71CAB90220BABFDD00DDF03C /* WZZZhongTingNode.m in Sources */,
 				71DDFE1720B7F06E00695935 /* WZZTingNode.m in Sources */,
 				71C6DF7420B2B591005085F9 /* WZZARManager.m in Sources */,
 				717ED2B220B6AA280002AC35 /* WZZShapeHandler.m in Sources */,

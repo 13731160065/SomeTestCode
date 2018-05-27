@@ -8,6 +8,9 @@
 
 #import "WZZShapeHandler.h"
 #import "WZZLinkedArray.h"
+#import "WZZWindowNode.h"
+#import "WZZWindowBorderTingNode.h"
+#import "WZZZhongTingNode.h"
 @import UIKit;
 @import SceneKit;
 
@@ -264,7 +267,7 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         NSLog(@"------------------------------");
         WZZLinkedObject * pa = linkArray.array[i];
         CGFloat paAngle_2 = angleBetweenLines(WZZShapeHandler_LinkedObjectToPoint(pa), WZZShapeHandler_LinkedObjectToPoint(pa.nextObj), WZZShapeHandler_LinkedObjectToPoint(pa), WZZShapeHandler_LinkedObjectToPoint(pa.lastObj))/2.0f;
-#error lll
+
         CGFloat AOXAngle = angleBetweenLines(WZZShapeHandler_LinkedObjectToPoint(pa.lastObj), WZZShapeHandler_LinkedObjectToPoint(pa), WZZShapeHandler_LinkedObjectToPoint(pa.lastObj), CGPointMake(10000, WZZShapeHandler_LinkedObjectToPoint(pa.lastObj).y));
 #else
         NSLog(@"------------------------------");
@@ -346,6 +349,104 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         nodeBox.geometry.firstMaterial.diffuse.contents = color;
         [node addChildNode:nodeBox];
     }];
+}
+
+//重置handler
++ (void)resetHandler {
+    wzzShapeHandler = [[WZZShapeHandler alloc] init];
+}
+
+//获取所有数据
+- (void)getRectAllBorderData:(void (^)(id))borderDataBlock {
+    WZZWindowNode * rootWindow = self.allWindows.firstObject;
+    NSArray * windowsArray = [NSArray arrayWithArray:self.allUpWindows];
+    NSMutableArray * allDataArr = [NSMutableArray array];
+    for (int i = 0; i < windowsArray.count; i++) {
+        WZZWindowNode * windowNode = windowsArray[i];
+        SCNVector3 upTV3 = SCNVector3Make(windowNode.borderUpTing.startPoint.x, windowNode.borderUpTing.startPoint.y, 0);
+        SCNVector3 downTV3 = SCNVector3Make(windowNode.borderDownTing.startPoint.x, windowNode.borderDownTing.startPoint.y, 0);
+        SCNVector3 rightTV3 = SCNVector3Make(windowNode.borderRightTing.startPoint.x, windowNode.borderRightTing.startPoint.y, 0);
+        SCNVector3 leftTV3 = SCNVector3Make(windowNode.borderLeftTing.startPoint.x, windowNode.borderLeftTing.startPoint.y, 0);
+        
+        upTV3 = [windowNode.borderUpTing convertPosition:upTV3 toNode:rootWindow];
+        downTV3 = [windowNode.borderDownTing convertPosition:downTV3 toNode:rootWindow];
+        rightTV3 = [windowNode.borderRightTing convertPosition:rightTV3 toNode:rootWindow];
+        leftTV3 = [windowNode.borderLeftTing convertPosition:leftTV3 toNode:rootWindow];
+        
+        CGPoint upTP = CGPointMake(upTV3.x, upTV3.y);
+        CGPoint downTP = CGPointMake(downTV3.x, downTV3.y);
+        CGPoint rightTP = CGPointMake(rightTV3.x, rightTV3.y);
+        CGPoint leftTP = CGPointMake(leftTV3.x, leftTV3.y);
+        
+        CGFloat shuTing = fabs(upTP.y-downTP.y);
+        CGFloat hengTing = fabs(rightTP.x-leftTP.x);
+        
+        NSLog(@"tag:[%zd], uy(%lf)-dy(%lf), rx(%lf)-lx(%lf)", windowNode.insideContent.nodeLevel,
+              upTP.y,
+              downTP.y,
+              rightTP.x,
+              leftTP.x
+              );
+        NSLog(@"T(%lf, %lf)", hengTing, shuTing);
+        
+        //计算数据
+        //计算两挺之间距离的类型，0框到框，1框到中，2中到中
+        int shuTingType = 0;
+        int hengTingType = 0;
+        //纵向
+        if ([windowNode.borderUpTing isKindOfClass:[WZZWindowBorderTingNode class]] && [windowNode.borderDownTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
+            //框到框
+            shuTingType = 0;
+            NSLog(@"竖:框到框");
+        } else if ([windowNode.borderUpTing isKindOfClass:[WZZWindowBorderTingNode class]] || [windowNode.borderDownTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
+            //框到中
+            shuTingType = 1;
+            NSLog(@"竖:框到边");
+        } else {
+            //中到中
+            shuTingType = 2;
+            NSLog(@"竖:边到边");
+        }
+        //横向
+        if ([windowNode.borderLeftTing isKindOfClass:[WZZWindowBorderTingNode class]] && [windowNode.borderRightTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
+            //框到框
+            hengTingType = 0;
+            NSLog(@"横:框到框");
+        } else if ([windowNode.borderLeftTing isKindOfClass:[WZZWindowBorderTingNode class]] || [windowNode.borderRightTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
+            //框到中
+            hengTingType = 1;
+            NSLog(@"横:框到边");
+        } else {
+            //中到中
+            hengTingType = 2;
+            NSLog(@"横:边到边");
+        }
+    }
+    
+}
+
+#pragma mark - 属性
+//全部window
+- (NSMutableArray<WZZWindowNode *> *)allWindows {
+    if (!_allWindows) {
+        _allWindows = [NSMutableArray array];
+    }
+    return _allWindows;
+}
+
+//所有最上层的window
+- (NSArray *)allUpWindows {
+    NSMutableArray * arr = [NSMutableArray array];
+    for (int i = 0; i < _allWindows.count; i++) {
+        WZZWindowNode * node = _allWindows[i];
+        //没有中挺的内容的window就是最上层的window
+        if (node.insideContent) {
+            if (!node.insideContent.insideZhongTing) {
+                [arr addObject:node];
+            }
+        }
+    }
+    return arr;
 }
 
 @end
