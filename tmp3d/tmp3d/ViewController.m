@@ -15,6 +15,7 @@
 
 #import "WZZSettingParamVC.h"
 #import "WZZCalParamVC.h"
+#import "WZZChangeTextureVC.h"
 
 @import UIKit;
 @import SceneKit;
@@ -59,9 +60,15 @@ typedef struct {
         [self presentViewController:vc animated:YES completion:nil];
     }}]];
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
-                         @"name":@"计算改变挺材质",
+                         @"name":@"改变挺材质",
                          @"action":^() {
-        
+        WZZChangeTextureVC * vc = [[WZZChangeTextureVC alloc] init];
+        vc.textureBlock = ^(NSString *textureName) {
+            NSMutableDictionary * dic = dataArr[2];
+            dic[@"name"] = [NSString stringWithFormat:@"改变挺材质 - %@", textureName];
+            [_mainTableView reloadData];
+        };
+        [self presentViewController:vc animated:YES completion:nil];
     }}]];
     
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
@@ -95,6 +102,8 @@ typedef struct {
 }
 
 - (void)setupWindowNode {
+    mainSCNV.scene = mainScene = [SCNScene scene];
+    
     //恢复默认
     [mainScene.rootNode enumerateChildNodesUsingBlock:^(SCNNode * _Nonnull child, BOOL * _Nonnull stop) {
         [child removeFromParentNode];

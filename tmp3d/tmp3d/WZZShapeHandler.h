@@ -20,7 +20,7 @@
 
 //转换点，返回CGPoint
 #define WZZShapeHandler_LinkedObjectToPoint(linkObj) [linkObj.thisObj CGPointValue]
-#define WZZShapeHandlerTexture_Border @"lvhejin.jpg"
+#define WZZShapeHandlerTexture_Border [WZZShapeHandler shareInstance].borderTexture
 #define WZZShapeHandlerTexture_Fill @"boli.jpg"
 #define WZZShapeHandler_mm_cm(cm) ((double)(cm)*10.0f)
 #define WZZShapeHandler_mm_dm(dm) ((double)(dm)*100.0f)
@@ -43,14 +43,6 @@ typedef enum : NSUInteger {
     WZZInsideNode_Action_Fill//填充
 } WZZInsideNode_Action;
 
-typedef enum : NSUInteger {
-    WZZInsideNodeFillType_None = 0,//没东西
-    WZZInsideNodeFillType_Wood,//木头
-    WZZInsideNodeFillType_Glass,//玻璃
-    WZZInsideNodeFillType_Metal_Ai,//金属铝
-    WZZInsideNodeFillType_Metal_Fe//金属铁
-} WZZInsideNodeFillType;//内容填充材质
-
 @interface WZZShapeHandler : NSObject
 
 /**
@@ -69,6 +61,21 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) WZZInsideNode_Action insideAction;
 
 /**
+ 内容填充类型
+ */
+@property (nonatomic, assign) WZZInsideNodeContentType insideContentType;
+
+/**
+ 具体内容填充物(可以是扇或材质，WZZFillNode)
+ */
+@property (nonatomic, assign) NSInteger insideFillType;
+
+/**
+ 边框材质
+ */
+@property (nonatomic, strong) NSString * borderTexture;
+
+/**
  操作队列数组
  */
 @property (nonatomic, strong) NSMutableArray <WZZMakeQueueModel *>* actionQueueArray;
@@ -85,6 +92,9 @@ typedef enum : NSUInteger {
  */
 @property (nonatomic, strong, readonly) NSArray <WZZWindowNode *>* allUpWindows;
 
+/**
+ 所有挺
+ */
 @property (nonatomic, strong) NSMutableArray <WZZTingNode *>* allTings;
 
 /**

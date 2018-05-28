@@ -9,6 +9,8 @@
 #import "WZZInsideNode.h"
 #import "WZZWindowNode.h"
 #import "WZZZhongTingNode.h"
+#import "WZZTextureFillNode.h"
+#import "WZZShanFillNode.h"
 
 //中挺宽度
 #define WZZInsideNode_BorderWidth WZZShapeHandler_mm_cm(5)
@@ -182,18 +184,30 @@
     }
 }
 
-- (void)fillWithInside:(WZZInsideNodeFillType)fillType {
-//    switch (fillType) {
-//        case WZZInsideNodeFillType_None:
-//            <#statements#>
-//            break;
-//
-//        default:
-//            break;
-//    }
-    self.geometry.firstMaterial.diffuse.contents = WZZShapeHandlerTexture_Fill;
-    self.geometry.firstMaterial.transparency = 0.5f;
-    self.insideType = WZZInsideNodeContentType_Fill;
+- (void)fillWithInside:(WZZInsideNodeContentType)fillType {
+    self.insideType = fillType;
+    switch (fillType) {
+        case WZZInsideNodeContentType_None:
+        {
+            self.geometry.firstMaterial.transparency = 0.0f;
+        }
+            break;
+        case WZZInsideNodeContentType_Fill:
+        {
+            WZZTextureFillNode * node = [WZZTextureFillNode fillNodeWithPointsArray:self.points deep:WZZInsideNode_BorderWidth/2.0f texture:[WZZShapeHandler shareInstance].insideFillType];
+            [self addChildNode:node];
+        }
+            break;
+        case WZZInsideNodeContentType_Window:
+        {
+            WZZShanFillNode * node = [WZZShanFillNode fillNodeWithPointsArray:self.points deep:WZZInsideNode_BorderWidth shanType:[WZZShapeHandler shareInstance].insideFillType shanBorderWidth:WZZInsideNode_BorderWidth];
+            [self addChildNode:node];
+        }
+            break;
+
+        default:
+            break;
+    }
 }
 
 - (void)nodeClick:(SCNHitTestResult *)result {
@@ -205,7 +219,7 @@
             [self cutWithPosition:touchPoint];
         }if ([WZZShapeHandler shareInstance].insideAction == WZZInsideNode_Action_Fill) {
             //填充
-            [self fillWithInside:0];
+            [self fillWithInside:[WZZShapeHandler shareInstance].insideContentType];
         } else {
             //none
         }

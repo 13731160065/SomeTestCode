@@ -83,7 +83,7 @@ static NSInteger WZZInsideNode_Node_Level = 0;
 
  @param fillType 填充物
  */
-- (void)fillWithInside:(WZZInsideNodeFillType)fillType;
+- (void)fillWithInside:(WZZInsideNodeContentType)fillType;
 
 /**
  点击了这个node

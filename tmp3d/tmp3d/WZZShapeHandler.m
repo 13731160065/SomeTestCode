@@ -40,6 +40,12 @@ CGFloat angleBetweenLines(CGPoint line1Start, CGPoint line1End, CGPoint line2Sta
 
 static WZZShapeHandler * wzzShapeHandler;
 
+@interface WZZShapeHandler () {
+    NSString * _borderTexture;
+}
+
+@end
+
 @implementation WZZShapeHandler
 
 + (instancetype)shareInstance {
@@ -549,6 +555,21 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         _allTings = [NSMutableArray array];
     }
     return _allTings;
+}
+
+//设置材质
+- (void)setBorderTexture:(NSString *)borderTexture {
+    _borderTexture = borderTexture;
+    [[self allTings] enumerateObjectsUsingBlock:^(WZZTingNode * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        obj.geometry.firstMaterial.diffuse.contents = borderTexture;
+    }];
+}
+
+- (NSString *)borderTexture {
+    if (!_borderTexture) {
+        _borderTexture = @"lvhejin.jpg";
+    }
+    return _borderTexture;
 }
 
 @end
