@@ -407,34 +407,6 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         //计算两挺之间距离的类型
         WZZShapeHandler_FromTo shuTingType = 0;
         WZZShapeHandler_FromTo hengTingType = 0;
-        //纵向
-        if ([windowNode.borderUpTing isKindOfClass:[WZZWindowBorderTingNode class]] && [windowNode.borderDownTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
-            //边到边
-            shuTingType = WZZShapeHandler_FromTo_BToB;
-            NSLog(@"竖:边到边");
-        } else if ([windowNode.borderUpTing isKindOfClass:[WZZWindowBorderTingNode class]] || [windowNode.borderDownTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
-            //边到中
-            shuTingType = WZZShapeHandler_FromTo_BToC;
-            NSLog(@"竖:边到中");
-        } else {
-            //中到中
-            shuTingType = WZZShapeHandler_FromTo_CToC;
-            NSLog(@"竖:中到中");
-        }
-        //横向
-        if ([windowNode.borderLeftTing isKindOfClass:[WZZWindowBorderTingNode class]] && [windowNode.borderRightTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
-            //边到边
-            hengTingType = WZZShapeHandler_FromTo_BToB;
-            NSLog(@"横:边到边");
-        } else if ([windowNode.borderLeftTing isKindOfClass:[WZZWindowBorderTingNode class]] || [windowNode.borderRightTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
-            //边到中
-            hengTingType = WZZShapeHandler_FromTo_BToC;
-            NSLog(@"横:边到中");
-        } else {
-            //中到中
-            hengTingType = WZZShapeHandler_FromTo_CToC;
-            NSLog(@"横:中到中");
-        }
         
         
         //计算尺寸
@@ -453,22 +425,53 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         CGFloat glassV = [DoorWindowCalculationFormulaObjective DoorWindowGlassCalculationFormula:vCalType distance:shuTing];
         [glassArr addObject:[NSString stringWithFormat:@"%.2lf", glassH]];
         [glassArr addObject:[NSString stringWithFormat:@"%.2lf", glassV]];
-        
-        //中挺尺寸
-        if ([windowNode.borderUpTing isKindOfClass:[WZZZhongTingNode class]]) {
-            CGFloat tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:hCalType distance:hengTing];
-            [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
-        }
-        if ([windowNode.borderDownTing isKindOfClass:[WZZZhongTingNode class]]) {
-            CGFloat tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:hCalType distance:hengTing];
-            [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
-        }
-        if ([windowNode.borderLeftTing isKindOfClass:[WZZZhongTingNode class]]) {
-            CGFloat tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:vCalType distance:shuTing];
-            [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
-        }
-        if ([windowNode.borderRightTing isKindOfClass:[WZZZhongTingNode class]]) {
-            CGFloat tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:vCalType distance:shuTing];
+    }
+    
+    //挺尺寸
+    NSArray * allTingArr = [WZZShapeHandler shareInstance].allTings;
+    for (int i = 0; i < allTingArr.count; i++) {
+        CGFloat tingLength = 0;
+        WZZTingNode * tingNode = allTingArr[i];
+        if ([tingNode isKindOfClass:[WZZZhongTingNode class]]) {
+            WZZZhongTingNode * zhongTing = (WZZZhongTingNode *)tingNode;
+            WZZInsideNode * insideNode = (WZZInsideNode *)zhongTing.superNode;
+            WZZWindowNode * windowNode = insideNode.superWindow;
+            if (zhongTing.tingHV == WZZInsideNode_H) {
+                //挺间关系
+                CalculationFormula tingType = [self handleHVWithWindowNode:windowNode tingHV:WZZInsideNode_H];
+                
+                //转换坐标
+                SCNVector3 rightTV3 = SCNVector3Make(windowNode.borderRightTing.startPoint.x, windowNode.borderRightTing.startPoint.y, 0);
+                SCNVector3 leftTV3 = SCNVector3Make(windowNode.borderLeftTing.startPoint.x, windowNode.borderLeftTing.startPoint.y, 0);
+
+                rightTV3 = [windowNode.borderRightTing convertPosition:rightTV3 toNode:rootWindow];
+                leftTV3 = [windowNode.borderLeftTing convertPosition:leftTV3 toNode:rootWindow];
+                
+                CGPoint rightTP = CGPointMake(rightTV3.x, rightTV3.y);
+                CGPoint leftTP = CGPointMake(leftTV3.x, leftTV3.y);
+                
+                CGFloat hengTing = fabs(rightTP.x-leftTP.x);
+                
+                tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:tingType distance:hengTing];
+            } else {
+                //挺间关系
+                CalculationFormula tingType = [self handleHVWithWindowNode:windowNode tingHV:WZZInsideNode_H];
+                
+                //转换坐标
+                SCNVector3 upTV3 = SCNVector3Make(windowNode.borderUpTing.startPoint.x, windowNode.borderUpTing.startPoint.y, 0);
+                SCNVector3 downTV3 = SCNVector3Make(windowNode.borderDownTing.startPoint.x, windowNode.borderDownTing.startPoint.y, 0);
+                
+                upTV3 = [windowNode.borderUpTing convertPosition:upTV3 toNode:rootWindow];
+                downTV3 = [windowNode.borderDownTing convertPosition:downTV3 toNode:rootWindow];
+                
+                CGPoint upTP = CGPointMake(upTV3.x, upTV3.y);
+                CGPoint downTP = CGPointMake(downTV3.x, downTV3.y);
+                
+                CGFloat shuTing = fabs(upTP.y-downTP.y);
+                
+                tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:tingType distance:shuTing];
+            }
+            
             [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
         }
     }
@@ -476,6 +479,44 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
     if (borderDataBlock) {
         borderDataBlock(allDataDic);
     }
+}
+
+//获取边框关系
+- (CalculationFormula)handleHVWithWindowNode:(WZZWindowNode *)windowNode
+                                          tingHV:(WZZInsideNode_HV)tingHV {
+    WZZShapeHandler_FromTo tingType;
+    if (tingHV == WZZInsideNode_H) {
+        //横向
+        if ([windowNode.borderLeftTing isKindOfClass:[WZZWindowBorderTingNode class]] && [windowNode.borderRightTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
+            //边到边
+            tingType = WZZShapeHandler_FromTo_BToB;
+            NSLog(@"横:边到边");
+        } else if ([windowNode.borderLeftTing isKindOfClass:[WZZWindowBorderTingNode class]] || [windowNode.borderRightTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
+            //边到中
+            tingType = WZZShapeHandler_FromTo_BToC;
+            NSLog(@"横:边到中");
+        } else {
+            //中到中
+            tingType = WZZShapeHandler_FromTo_CToC;
+            NSLog(@"横:中到中");
+        }
+    } else {
+        //纵向
+        if ([windowNode.borderUpTing isKindOfClass:[WZZWindowBorderTingNode class]] && [windowNode.borderDownTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
+            //边到边
+            tingType = WZZShapeHandler_FromTo_BToB;
+            NSLog(@"竖:边到边");
+        } else if ([windowNode.borderUpTing isKindOfClass:[WZZWindowBorderTingNode class]] || [windowNode.borderDownTing isKindOfClass:[WZZWindowBorderTingNode class]]) {
+            //边到中
+            tingType = WZZShapeHandler_FromTo_BToC;
+            NSLog(@"竖:边到中");
+        } else {
+            //中到中
+            tingType = WZZShapeHandler_FromTo_CToC;
+            NSLog(@"竖:中到中");
+        }
+    }
+    return (CalculationFormula)tingType;
 }
 
 #pragma mark - 属性
@@ -500,6 +541,14 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         }
     }
     return arr;
+}
+
+//所有挺
+- (NSMutableArray<WZZTingNode *> *)allTings {
+    if (!_allTings) {
+        _allTings = [NSMutableArray array];
+    }
+    return _allTings;
 }
 
 @end

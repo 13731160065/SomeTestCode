@@ -118,6 +118,9 @@
     self.borderUpTing = borderArr[1];
     self.borderRightTing = borderArr[2];
     self.borderDownTing = borderArr[3];
+    
+    //添加至全部挺中
+    [[[WZZShapeHandler shareInstance] allTings] addObjectsFromArray:borderArr];
 }
 
 //创建4边形边框

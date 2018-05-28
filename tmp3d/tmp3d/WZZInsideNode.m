@@ -108,8 +108,10 @@
                 window2.borderRightTing = self.superWindow.borderRightTing;
                 window2.borderDownTing = self.insideZhongTing;
                 
-                //对window赋值
-                [self setInsideWindow:@[window1, window2]];
+                //对window赋值，从下往上
+                [self setInsideWindow:@[window2, window1]];
+                
+                [[[WZZShapeHandler shareInstance] allTings] addObject:self.insideZhongTing];
             }
         }
     } else {
@@ -172,6 +174,11 @@
         window2.borderLeftTing = self.insideZhongTing;
         window2.borderRightTing = self.superWindow.borderRightTing;
         window2.borderDownTing = self.superWindow.borderDownTing;
+        
+        //对window赋值
+        [self setInsideWindow:@[window1, window2]];
+        
+        [[[WZZShapeHandler shareInstance] allTings] addObject:self.insideZhongTing];
     }
 }
 

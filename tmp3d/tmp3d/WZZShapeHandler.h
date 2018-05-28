@@ -12,6 +12,7 @@
 #import <Foundation/Foundation.h>
 #import "WZZLinkedArray.h"
 
+@class WZZTingNode;
 @class WZZWindowNode;
 @class WZZMakeQueueModel;
 @import UIKit;
@@ -83,6 +84,8 @@ typedef enum : NSUInteger {
  所有在最上层的window
  */
 @property (nonatomic, strong, readonly) NSArray <WZZWindowNode *>* allUpWindows;
+
+@property (nonatomic, strong) NSMutableArray <WZZTingNode *>* allTings;
 
 /**
  单例

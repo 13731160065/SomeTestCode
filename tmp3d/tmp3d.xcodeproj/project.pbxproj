@@ -23,6 +23,10 @@
 		7191A85520AC43F300F729A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7191A85420AC43F300F729A4 /* main.m */; };
 		7191A85F20AC43F400F729A4 /* tmp3dTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7191A85E20AC43F400F729A4 /* tmp3dTests.m */; };
 		7191A86A20AC43F400F729A4 /* tmp3dUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7191A86920AC43F400F729A4 /* tmp3dUITests.m */; };
+		719313F220BBB9C800663B8F /* WZZSettingParamVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 719313F020BBB9C800663B8F /* WZZSettingParamVC.m */; };
+		719313F320BBB9C800663B8F /* WZZSettingParamVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 719313F120BBB9C800663B8F /* WZZSettingParamVC.xib */; };
+		719313F720BBBB1300663B8F /* WZZCalParamVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 719313F520BBBB1300663B8F /* WZZCalParamVC.m */; };
+		719313F820BBBB1300663B8F /* WZZCalParamVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 719313F620BBBB1300663B8F /* WZZCalParamVC.xib */; };
 		71C6DF6F20B2A0CE005085F9 /* metal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71C6DF6E20B2A0CE005085F9 /* metal.jpg */; };
 		71C6DF7120B2A141005085F9 /* metal2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71C6DF7020B2A140005085F9 /* metal2.jpg */; };
 		71C6DF7420B2B591005085F9 /* WZZARManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 71C6DF7220B2B591005085F9 /* WZZARManager.m */; };
@@ -82,6 +86,12 @@
 		7191A86520AC43F400F729A4 /* tmp3dUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tmp3dUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7191A86920AC43F400F729A4 /* tmp3dUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tmp3dUITests.m; sourceTree = "<group>"; };
 		7191A86B20AC43F400F729A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		719313EF20BBB9C800663B8F /* WZZSettingParamVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZSettingParamVC.h; sourceTree = "<group>"; };
+		719313F020BBB9C800663B8F /* WZZSettingParamVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZSettingParamVC.m; sourceTree = "<group>"; };
+		719313F120BBB9C800663B8F /* WZZSettingParamVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WZZSettingParamVC.xib; sourceTree = "<group>"; };
+		719313F420BBBB1300663B8F /* WZZCalParamVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZCalParamVC.h; sourceTree = "<group>"; };
+		719313F520BBBB1300663B8F /* WZZCalParamVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZCalParamVC.m; sourceTree = "<group>"; };
+		719313F620BBBB1300663B8F /* WZZCalParamVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WZZCalParamVC.xib; sourceTree = "<group>"; };
 		71C6DF6E20B2A0CE005085F9 /* metal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = metal.jpg; sourceTree = "<group>"; };
 		71C6DF7020B2A140005085F9 /* metal2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = metal2.jpg; sourceTree = "<group>"; };
 		71C6DF7220B2B591005085F9 /* WZZARManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WZZARManager.m; sourceTree = "<group>"; };
@@ -156,6 +166,12 @@
 				7191A84620AC43F300F729A4 /* AppDelegate.m */,
 				7191A84820AC43F300F729A4 /* ViewController.h */,
 				7191A84920AC43F300F729A4 /* ViewController.m */,
+				719313EF20BBB9C800663B8F /* WZZSettingParamVC.h */,
+				719313F020BBB9C800663B8F /* WZZSettingParamVC.m */,
+				719313F120BBB9C800663B8F /* WZZSettingParamVC.xib */,
+				719313F420BBBB1300663B8F /* WZZCalParamVC.h */,
+				719313F520BBBB1300663B8F /* WZZCalParamVC.m */,
+				719313F620BBBB1300663B8F /* WZZCalParamVC.xib */,
 				7146B05620B55B6D0097A23D /* WZZWindowNode.h */,
 				7146B05720B55B6D0097A23D /* WZZWindowNode.m */,
 				71647BFD20B62DFB0077728E /* WZZInsideNode.h */,
@@ -314,8 +330,10 @@
 				71DDFE1120B7DE5D00695935 /* lvhejin.jpg in Resources */,
 				7191A85220AC43F300F729A4 /* LaunchScreen.storyboard in Resources */,
 				71C6DF6F20B2A0CE005085F9 /* metal.jpg in Resources */,
+				719313F320BBB9C800663B8F /* WZZSettingParamVC.xib in Resources */,
 				71C6DF7120B2A141005085F9 /* metal2.jpg in Resources */,
 				7191A84F20AC43F300F729A4 /* Assets.xcassets in Resources */,
+				719313F820BBBB1300663B8F /* WZZCalParamVC.xib in Resources */,
 				71DDFE0F20B7D7AD00695935 /* boli.jpg in Resources */,
 				71777CCF20AF04E200F19CF3 /* met.jpg in Resources */,
 				7191A84D20AC43F300F729A4 /* Main.storyboard in Resources */,
@@ -351,6 +369,7 @@
 				7146B05820B55B6D0097A23D /* WZZWindowNode.m in Sources */,
 				71CAB8FF20BABFC600DDF03C /* WZZWindowBorderTingNode.m in Sources */,
 				710A675720B67305001046F5 /* WZZLinkedArray.m in Sources */,
+				719313F220BBB9C800663B8F /* WZZSettingParamVC.m in Sources */,
 				71CAB90220BABFDD00DDF03C /* WZZZhongTingNode.m in Sources */,
 				71DDFE1720B7F06E00695935 /* WZZTingNode.m in Sources */,
 				71C6DF7420B2B591005085F9 /* WZZARManager.m in Sources */,
@@ -358,6 +377,7 @@
 				7191A84720AC43F300F729A4 /* AppDelegate.m in Sources */,
 				71CAB90520BB146A00DDF03C /* DoorWindowCalculationFormulaObjective.m in Sources */,
 				71647BFF20B62DFB0077728E /* WZZInsideNode.m in Sources */,
+				719313F720BBBB1300663B8F /* WZZCalParamVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

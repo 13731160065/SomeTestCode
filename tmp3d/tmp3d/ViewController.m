@@ -12,6 +12,10 @@
 #import "WZZ2DButtonNode.h"
 #import "WZZShapeHandler.h"
 #import "DoorWindowCalculationFormulaObjective.h"
+
+#import "WZZSettingParamVC.h"
+#import "WZZCalParamVC.h"
+
 @import UIKit;
 @import SceneKit;
 
@@ -23,10 +27,9 @@ typedef struct {
 
 @interface ViewController ()<UITableViewDelegate, UITableViewDataSource>
 {
-    NSMutableDictionary * nodeDic;
-    NSMutableArray * textureArr;
-    NSMutableArray * textureNameArr;
-    NSInteger textureIdx;
+    SCNScene * mainScene;
+    NSMutableArray * dataArr;
+    SCNView * mainSCNV;
 }
 @property (weak, nonatomic) IBOutlet UIView *upView;
 @property (weak, nonatomic) IBOutlet UITextField *widTF;
@@ -41,29 +44,80 @@ typedef struct {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    dataArr = [NSMutableArray array];
+    [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                         @"name":@"设置计算参数",
+                         @"action":^() {
+        WZZSettingParamVC * vc = [[WZZSettingParamVC alloc] init];
+        [self presentViewController:vc animated:YES completion:nil];
+    }}]];
+    [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                         @"name":@"计算尺寸",
+                         @"action":^() {
+        WZZCalParamVC * vc = [[WZZCalParamVC alloc] init];
+        vc.image = [self snapshot:mainSCNV];
+        [self presentViewController:vc animated:YES completion:nil];
+    }}]];
+    [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                         @"name":@"计算改变挺材质",
+                         @"action":^() {
+        
+    }}]];
+    
+    [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                                                                       @"name":@"选择填充物",
+                                                                       @"action":^() {
+        
+    }}]];
+    
+    //上部分视图
     UIView * upview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, _upView.frame.size.height)];
     [_upView addSubview:upview];
     [_upView bringSubviewToFront:_arButton];
+
+    //3d视图
+    mainSCNV = [[SCNView alloc] initWithFrame:upview.bounds];
+    [upview addSubview:mainSCNV];
+    mainSCNV.playing = YES;
+    mainSCNV.allowsCameraControl = YES;
+    //主场景
+    mainScene = [SCNScene scene];
+    mainSCNV.scene = mainScene;
     
-    //3d
-    SCNView * scnView = [[SCNView alloc] initWithFrame:upview.bounds];
-    [upview addSubview:scnView];
-    scnView.playing = YES;
-    scnView.allowsCameraControl = YES;
+    //初始化门窗计算工具
+    [self setupDoorObj];
     
-    SCNScene * scene = [SCNScene scene];
-    scnView.scene = scene;
-//    scene.background.contents = [UIColor blackColor];
+    [_mainTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
+    [_mainTableView setTableFooterView:[[UIView alloc] init]];
     
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    [mainSCNV addGestureRecognizer:tap];
+}
+
+- (void)setupWindowNode {
+    //恢复默认
+    [mainScene.rootNode enumerateChildNodesUsingBlock:^(SCNNode * _Nonnull child, BOOL * _Nonnull stop) {
+        [child removeFromParentNode];
+    }];
+    //重置handler
+    [WZZShapeHandler resetHandler];
     
-    const CGFloat widHei = WZZShapeHandler_mm_m(1.5);
+    CGFloat wid = _widTF.text.doubleValue;
+    CGFloat hei = _heiTF.text.doubleValue;
+    
+    //默认宽高
+//    const CGFloat widHei = WZZShapeHandler_mm_m(1.5);
     
 #if 1
-//    WZZWindowNode * node233 = [WZZWindowNode nodeWithLeftHeight:widHei rightHeight:widHei/2 downWidth:widHei hasBorder:YES];
-//    [scene.rootNode addChildNode:node233];
-    WZZWindowNode * node233 = [WZZWindowNode nodeWithHeight:widHei width:widHei hasBorder:YES];
-    [scene.rootNode addChildNode:node233];
+    //梯形
+    //    WZZWindowNode * node233 = [WZZWindowNode nodeWithLeftHeight:widHei rightHeight:widHei/2 downWidth:widHei hasBorder:YES];
+    //    [scene.rootNode addChildNode:node233];
+    
+    //矩形
+    WZZWindowNode * node233 = [WZZWindowNode nodeWithHeight:hei width:wid hasBorder:YES];
+    [mainScene.rootNode addChildNode:node233];
 #else
+    //多边形
     NSMutableArray * arr = [NSMutableArray array];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, 0)]];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, widHei)]];
@@ -72,32 +126,13 @@ typedef struct {
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei, 0)]];
     WZZWindowNode * node233 = [WZZWindowNode nodeWithPoints:arr hasBorder:YES];
 #endif
+    
     node233.isRootWindow = YES;
-    [scene.rootNode addChildNode:node233];
-    [node233 setPosition:SCNVector3Make(-widHei/2.0f, -widHei/2.0f, 0)];
-    
-    //旧的
-    textureArr = [NSMutableArray array];
-    [textureArr addObject:@"mucai005.jpg"];
-    [textureArr addObject:@"met.jpg"];
-    [textureArr addObject:@"metal.jpg"];
-    [textureArr addObject:@"metal2.jpg"];
-    
-    textureNameArr = [NSMutableArray array];
-    [textureNameArr addObject:@"木材"];
-    [textureNameArr addObject:@"金属"];
-    [textureNameArr addObject:@"金属2"];
-    [textureNameArr addObject:@"金属3"];
-    
-    textureIdx = 0;
-    
-    [_mainTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
-    [_mainTableView setTableFooterView:[[UIView alloc] init]];
-    
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-    [scnView addGestureRecognizer:tap];
+    [mainScene.rootNode addChildNode:node233];
+    [node233 setPosition:SCNVector3Make(-wid/2.0f, -hei/2.0f, 0)];
 }
 
+//配置计算参数
 - (void)setupDoorObj {
     DoorWindowCalculationFormulaObjective * doorHandler = [DoorWindowCalculationFormulaObjective share];
     
@@ -131,8 +166,8 @@ typedef struct {
     doorHandler.centreVariable = 9.0f;
 }
 
-- (void)handleTap:(UIGestureRecognizer*)gestureRecognize
-{
+//scnview点击
+- (void)handleTap:(UIGestureRecognizer*)gestureRecognize {
     //点击了scnview
     SCNView *scnView = (SCNView *)gestureRecognize.view;
     
@@ -165,71 +200,48 @@ typedef struct {
     }
 }
 
+//创建
 - (IBAction)changeC:(id)sender {
     [self.view endEditing:YES];
-    SCNNode * lineNode = nodeDic[@"lineNode"];
-    SCNNode * lineNode2 = nodeDic[@"lineNode2"];
-    SCNNode * lineNode3 = nodeDic[@"lineNode3"];
-    SCNNode * lineNode4 = nodeDic[@"lineNode4"];
     
-    CGFloat wid = _widTF.text.doubleValue/100.0f;
-    CGFloat hei = _heiTF.text.doubleValue/100.0f;
-    
-#if 1
-    
-    
-    //添加框
-    SCNBox * box = [SCNBox boxWithWidth:0.5 height:hei length:0.5 chamferRadius:0.0f];
-    SCNBox * box2 = [SCNBox boxWithWidth:0.5 height:wid length:0.5 chamferRadius:0.0f];
-    [lineNode setGeometry:box];
-    [lineNode2 setGeometry:box];
-    [lineNode3 setGeometry:box2];
-    [lineNode4 setGeometry:box2];
-#else
-    //高12
-    SCNBox * box = (SCNBox *)lineNode.geometry;
-    box.length = hei;
-    SCNBox * box2 = (SCNBox *)lineNode2.geometry;
-    box2.length = hei;
-    
-    //宽34
-    SCNBox * box3 = (SCNBox *)lineNode3.geometry;
-    box3.length = wid;
-    SCNBox * box4 = (SCNBox *)lineNode4.geometry;
-    box4.length = wid;
-#endif
-    
-    lineNode.position = SCNVector3Make(-(wid-0.5)/2.0f, 0, 0);
-    
-    lineNode2.position = SCNVector3Make((wid-0.5)/2.0f, 0, 0);
-    
-    lineNode3.position = SCNVector3Make(0, -(hei-0.5)/2.0f, 0);
-    lineNode3.rotation = SCNVector4Make(0, 0, 1, M_PI_2);
-    
-    lineNode4.position = SCNVector3Make(0, (hei-0.5)/2.0f, 0);
-    lineNode4.rotation = SCNVector4Make(0, 0, 1, M_PI_2);
-    
-    [self changeClick];
+    [self setupWindowNode];
 }
 
-- (void)changeClick {
-    [nodeDic.allValues enumerateObjectsUsingBlock:^(SCNNode * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        obj.geometry.firstMaterial.diffuse.contents = textureArr[textureIdx];
-    }];
-    [[WZZShapeHandler shareInstance] getRectAllBorderData:^(id borderData) {
-        NSLog(@"\n压线尺寸:\n%@\n玻璃尺寸\n%@\n中挺尺寸有点问题\n%@", borderData[@"line"], borderData[@"glass"], borderData[@"zhongTing"]);
-    }];
+- (UIImage *)snapshot:(UIView *)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0);
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
 }
+
 - (IBAction)hvChange:(UISwitch *)sender {
     [WZZShapeHandler shareInstance].insideHV = sender.on?WZZInsideNode_H:WZZInsideNode_V;
 }
 
-- (IBAction)actionChange:(UISwitch *)sender {
-    [WZZShapeHandler shareInstance].insideAction = sender.on?WZZInsideNode_Action_Cut:WZZInsideNode_Action_None;
-}
-
-- (IBAction)fillChange:(UISwitch *)sender {
-        [WZZShapeHandler shareInstance].insideAction = sender.on?WZZInsideNode_Action_Fill:WZZInsideNode_Action_None;
+- (IBAction)actionClick:(UISegmentedControl *)sender {
+    switch (sender.selectedSegmentIndex) {
+        case 0:
+        {
+            [WZZShapeHandler shareInstance].insideAction = WZZInsideNode_Action_None;
+        }
+            break;
+        case 1:
+        {
+            [WZZShapeHandler shareInstance].insideAction = WZZInsideNode_Action_Cut;
+        }
+            break;
+        case 2:
+        {
+            [WZZShapeHandler shareInstance].insideAction = WZZInsideNode_Action_Fill;
+        }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (IBAction)arKitClick:(id)sender {
@@ -240,18 +252,19 @@ typedef struct {
 
 #pragma mark - tableview代理
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return textureArr.count;
+    return dataArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-    cell.textLabel.text = textureNameArr[indexPath.row];
+    cell.textLabel.text = dataArr[indexPath.row][@"name"];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    textureIdx = indexPath.row;
-    [self changeClick];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    void(^aBlock)(void) = dataArr[indexPath.row][@"action"];
+    aBlock();
 }
 
 #pragma mark - 尝试
