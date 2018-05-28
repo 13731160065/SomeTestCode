@@ -16,6 +16,7 @@
 #import "WZZSettingParamVC.h"
 #import "WZZCalParamVC.h"
 #import "WZZChangeTextureVC.h"
+#import "WZZChangeFillVC.h"
 
 @import UIKit;
 @import SceneKit;
@@ -74,7 +75,13 @@ typedef struct {
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
                                                                        @"name":@"选择填充物",
                                                                        @"action":^() {
-        
+        WZZChangeFillVC * vc = [[WZZChangeFillVC alloc] init];
+        vc.textureBlock = ^(NSString *textureName) {
+            NSMutableDictionary * dic = dataArr[3];
+            dic[@"name"] = [NSString stringWithFormat:@"改变挺填充物 - %@", textureName];
+            [_mainTableView reloadData];
+        };
+        [self presentViewController:vc animated:YES completion:nil];
     }}]];
     
     //上部分视图

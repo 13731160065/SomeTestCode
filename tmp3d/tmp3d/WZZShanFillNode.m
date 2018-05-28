@@ -18,18 +18,20 @@
                                shanType:(WZZShanFillNode_ShanType)shanType
                         shanBorderWidth:(CGFloat)shanBorderWidth {
     WZZShanFillNode * node = [self fillNodeWithPointsArray:pointsArray deep:deep];
+    node.shanBorderWidth = shanBorderWidth;
     [node setShanType:shanType];
     [node fillWithShan];
-    node.shanBorderWidth = shanBorderWidth;
     return node;
 }
 
 - (void)fillWithShan {
+    self.geometry.firstMaterial.transparency = 0.0f;
+    self.geometry.firstMaterial.diffuse.contents = nil;
+    
     switch (self.shanType) {
         case WZZShanFillNode_ShanType_None:
         {
-            self.geometry.firstMaterial.diffuse.contents = nil;
-            self.geometry.firstMaterial.transparency = 0.0f;
+            
         }
             break;
         case WZZShanFillNode_ShanType_NormalShan:

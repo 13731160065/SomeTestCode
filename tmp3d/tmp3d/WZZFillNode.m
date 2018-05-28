@@ -18,7 +18,7 @@
     UIBezierPath * path = [UIBezierPath bezierPath];
     [path moveToPoint:pointsArray[0].CGPointValue];
     for (int i = 1; i < pointsArray.count; i++) {
-        [path moveToPoint:pointsArray[i].CGPointValue];
+        [path addLineToPoint:pointsArray[i].CGPointValue];
     }
     SCNShape * shape = [SCNShape shapeWithPath:path extrusionDepth:deep];
     WZZFillNode * node = (WZZFillNode *)[self nodeWithGeometry:shape];

@@ -18,7 +18,7 @@
                                 texture:(WZZTextureFillNode_textureType)texture {
     WZZTextureFillNode * node = [self fillNodeWithPointsArray:pointsArray deep:deep];
     node.fillTexture = texture;
-    [node fillTexture];
+    [node fillWithTexture];
     return node;
 }
 

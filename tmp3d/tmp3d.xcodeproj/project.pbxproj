@@ -32,6 +32,8 @@
 		7193140120BBDDF500663B8F /* WZZShanFillNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7193140020BBDDF500663B8F /* WZZShanFillNode.m */; };
 		7193140520BC102900663B8F /* WZZChangeTextureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7193140320BC102900663B8F /* WZZChangeTextureVC.m */; };
 		7193140620BC102900663B8F /* WZZChangeTextureVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7193140420BC102900663B8F /* WZZChangeTextureVC.xib */; };
+		7193140A20BC1F0200663B8F /* WZZChangeFillVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7193140820BC1F0200663B8F /* WZZChangeFillVC.m */; };
+		7193140B20BC1F0200663B8F /* WZZChangeFillVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7193140920BC1F0200663B8F /* WZZChangeFillVC.xib */; };
 		71C6DF6F20B2A0CE005085F9 /* metal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71C6DF6E20B2A0CE005085F9 /* metal.jpg */; };
 		71C6DF7120B2A141005085F9 /* metal2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71C6DF7020B2A140005085F9 /* metal2.jpg */; };
 		71C6DF7420B2B591005085F9 /* WZZARManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 71C6DF7220B2B591005085F9 /* WZZARManager.m */; };
@@ -106,6 +108,9 @@
 		7193140220BC102900663B8F /* WZZChangeTextureVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZChangeTextureVC.h; sourceTree = "<group>"; };
 		7193140320BC102900663B8F /* WZZChangeTextureVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZChangeTextureVC.m; sourceTree = "<group>"; };
 		7193140420BC102900663B8F /* WZZChangeTextureVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WZZChangeTextureVC.xib; sourceTree = "<group>"; };
+		7193140720BC1F0200663B8F /* WZZChangeFillVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZChangeFillVC.h; sourceTree = "<group>"; };
+		7193140820BC1F0200663B8F /* WZZChangeFillVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZChangeFillVC.m; sourceTree = "<group>"; };
+		7193140920BC1F0200663B8F /* WZZChangeFillVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WZZChangeFillVC.xib; sourceTree = "<group>"; };
 		71C6DF6E20B2A0CE005085F9 /* metal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = metal.jpg; sourceTree = "<group>"; };
 		71C6DF7020B2A140005085F9 /* metal2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = metal2.jpg; sourceTree = "<group>"; };
 		71C6DF7220B2B591005085F9 /* WZZARManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WZZARManager.m; sourceTree = "<group>"; };
@@ -189,6 +194,9 @@
 				7193140220BC102900663B8F /* WZZChangeTextureVC.h */,
 				7193140320BC102900663B8F /* WZZChangeTextureVC.m */,
 				7193140420BC102900663B8F /* WZZChangeTextureVC.xib */,
+				7193140720BC1F0200663B8F /* WZZChangeFillVC.h */,
+				7193140820BC1F0200663B8F /* WZZChangeFillVC.m */,
+				7193140920BC1F0200663B8F /* WZZChangeFillVC.xib */,
 				7146B05620B55B6D0097A23D /* WZZWindowNode.h */,
 				7146B05720B55B6D0097A23D /* WZZWindowNode.m */,
 				71647BFD20B62DFB0077728E /* WZZInsideNode.h */,
@@ -353,6 +361,7 @@
 				71DDFE1120B7DE5D00695935 /* lvhejin.jpg in Resources */,
 				7191A85220AC43F300F729A4 /* LaunchScreen.storyboard in Resources */,
 				7193140620BC102900663B8F /* WZZChangeTextureVC.xib in Resources */,
+				7193140B20BC1F0200663B8F /* WZZChangeFillVC.xib in Resources */,
 				71C6DF6F20B2A0CE005085F9 /* metal.jpg in Resources */,
 				719313F320BBB9C800663B8F /* WZZSettingParamVC.xib in Resources */,
 				71C6DF7120B2A141005085F9 /* metal2.jpg in Resources */,
@@ -406,6 +415,7 @@
 				719313FE20BBDDE400663B8F /* WZZTextureFillNode.m in Sources */,
 				7193140520BC102900663B8F /* WZZChangeTextureVC.m in Sources */,
 				719313F720BBBB1300663B8F /* WZZCalParamVC.m in Sources */,
+				7193140A20BC1F0200663B8F /* WZZChangeFillVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
