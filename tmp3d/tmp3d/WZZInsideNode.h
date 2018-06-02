@@ -10,6 +10,7 @@
 #import "WZZShapeHandler.h"
 #import "WZZZhongTingNode.h"
 @class WZZWindowNode;
+@class WZZFillNode;
 
 //全局node等级
 static NSInteger WZZInsideNode_Node_Level = 0;
@@ -49,7 +50,7 @@ static NSInteger WZZInsideNode_Node_Level = 0;
 /**
  父window
  */
-@property (nonatomic, strong) WZZWindowNode * superWindow;
+@property (nonatomic, weak) WZZWindowNode * superWindow;
 
 /**
  内容上的中挺
@@ -61,7 +62,7 @@ static NSInteger WZZInsideNode_Node_Level = 0;
 /**
  内容为填充
  */
-@property (nonatomic, strong) WZZInsideNode * insideFill;
+@property (nonatomic, strong) WZZFillNode * insideFill;
 
 /**
  创建inside
@@ -70,6 +71,16 @@ static NSInteger WZZInsideNode_Node_Level = 0;
  @return 内容
  */
 - (instancetype)initInsideWithWindow:(WZZWindowNode *)node;
+
+/**
+ 创建inside
+ ，可以赋值nodelevel一般不要随便调用
+ 
+ @param node 框
+ @param nodeLevel node等级
+ @return 内容
+ */
+- (instancetype)initInsideWithWindow:(WZZWindowNode *)node nodeLevel:(NSInteger)nodeLevel;
 
 /**
  切

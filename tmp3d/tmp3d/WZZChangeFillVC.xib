@@ -59,8 +59,8 @@
                     </constraints>
                     <segments>
                         <segment title="玻璃"/>
-                        <segment title="玻璃2"/>
                         <segment title="扇"/>
+                        <segment title="转向框"/>
                     </segments>
                     <connections>
                         <action selector="segClick:" destination="-1" eventType="valueChanged" id="6ef-pp-zF6"/>

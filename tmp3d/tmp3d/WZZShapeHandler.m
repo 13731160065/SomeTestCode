@@ -12,14 +12,10 @@
 #import "WZZWindowBorderTingNode.h"
 #import "WZZZhongTingNode.h"
 #import "DoorWindowCalculationFormulaObjective.h"
+#import "WZZTextureFillNode.h"
+#import "WZZShanFillNode.h"
 @import UIKit;
 @import SceneKit;
-
-typedef enum : NSUInteger {
-    WZZShapeHandler_FromTo_BToB,//边到边
-    WZZShapeHandler_FromTo_BToC,//边到中
-    WZZShapeHandler_FromTo_CToC//中到中
-} WZZShapeHandler_FromTo;
 
 #define radiansToDegrees(x) (180.0 * x / M_PI)
 
@@ -36,6 +32,42 @@ CGFloat angleBetweenLines(CGPoint line1Start, CGPoint line1End, CGPoint line2Sta
     NSLog(@"jd>%@º, %@", @(radiansToDegrees(rads)), @(rads));
     
     return rads;
+}
+
+//一次函数表达式
+typedef struct WZZLineFuncKB {
+    CGFloat k;//系数
+    CGFloat b;//y轴交点
+    BOOL X;//当两个x相等时的x
+} WZZLineFuncKB;
+
+//根据kb创建一次函数表达式
+WZZLineFuncKB WZZLineFuncKBMake(CGFloat k, CGFloat b, BOOL X) {
+    WZZLineFuncKB kb;
+    kb.k = k;
+    kb.b = b;
+    kb.X = X;
+    return kb;
+}
+
+//根据2点计算一次函数表达式
+WZZLineFuncKB WZZLineFuncKBP1P2(CGPoint p1, CGPoint p2) {
+    if (p1.x == p2.x) {
+        //表达式直接为x
+        return WZZLineFuncKBMake(0, 0, YES);
+    }
+    CGFloat k = (p1.y-p2.y)/(p1.x-p2.x);
+    CGFloat b = p1.y-k*p1.x;
+    return WZZLineFuncKBMake(k, b, NO);
+}
+
+//根据x和函数kb获取点
+CGPoint getPointWithLineKBX(WZZLineFuncKB kb, CGFloat x) {
+    return CGPointMake(x, kb.k*x+kb.b);
+}
+//根据y和函数kb获取点
+CGPoint getPointWithLineKBY(WZZLineFuncKB kb, CGFloat y) {
+    return CGPointMake((y-kb.b)/kb.k, y);
 }
 
 static WZZShapeHandler * wzzShapeHandler;
@@ -351,6 +383,106 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
     return okArray;
 }
 
++ (NSArray <NSValue *>*)makeAnyBorder3WithLinkArray:(WZZLinkedArray *)linkArray
+                                             border:(CGFloat)border {
+    NSMutableArray * returnArr = [NSMutableArray array];
+    for (int i = 0; i < linkArray.array.count; i++) {
+        WZZLinkedObject * lpa = linkArray.array[i];
+        CGPoint pa = WZZShapeHandler_LinkedObjectToPoint(lpa);
+        CGPoint pal = WZZShapeHandler_LinkedObjectToPoint(lpa.lastObj);
+        CGPoint pan = WZZShapeHandler_LinkedObjectToPoint(lpa.nextObj);
+        
+        WZZLineFuncKB kbl = WZZLineFuncKBP1P2(pa, pal);
+        WZZLineFuncKB kbn = WZZLineFuncKBP1P2(pa, pan);
+        
+        WZZLineFuncKB ll1, ll2, ln1, ln2;
+        CGPoint p1, p2, p3, p4;
+        
+        if (kbl.X) {
+            //垂直x轴
+            ll1 = WZZLineFuncKBMake(kbl.k, kbl.b, kbl.X);
+            ll2 = WZZLineFuncKBMake(kbl.k, kbl.b, kbl.X);
+        } else {
+            ll1 = WZZLineFuncKBMake(kbl.k, kbl.b+border/cos(atan(kbl.k)), NO);
+            ll2 = WZZLineFuncKBMake(kbl.k, kbl.b-border/cos(atan(kbl.k)), NO);
+        }
+        if (kbn.X) {
+            //垂直x轴
+            ln1 = WZZLineFuncKBMake(kbn.k, kbn.b, kbn.X);
+            ln2 = WZZLineFuncKBMake(kbn.k, kbn.b, kbn.X);
+        } else {
+            ln1 = WZZLineFuncKBMake(kbn.k, kbn.b+border/cos(atan(kbn.k)), NO);
+            ln2 = WZZLineFuncKBMake(kbn.k, kbn.b-border/cos(atan(kbn.k)), NO);
+        }
+        
+        //计算4个交点坐标
+        //，k1*x+b1=k2*x+b2，x=(b2-b1)/(k1-k2);(ll1, ln1)
+        p1.x = (ln1.b-ll1.b)/(ll1.k-ln1.k);
+        //y=k1*x+b
+        p1.y = p1.x*ll1.k+ll1.b;
+        //同上，(ll2, ln2)
+        p2.x = (ln2.b-ll2.b)/(ll2.k-ln2.k);
+        p2.y = p2.x*ll2.k+ll2.b;
+        //同上，(ll1, ln2)
+        p3.x = (ln2.b-ll1.b)/(ll1.k-ln2.k);
+        p3.y = p3.x*ll2.k+ll2.b;
+        //同上，(ll2, ln1)
+        p4.x = (ln1.b-ll2.b)/(ll2.k-ln1.k);
+        p4.y = p4.x*ll2.k+ll2.b;
+        
+        //判断某边垂直x的情况
+        if (kbl.X) {
+            //x=any, y=kx+b, (x+, ln1)
+            p1.x = pa.x+border;
+            p1.y = ln1.k*p1.x+ln1.b;
+            //x=any, y=kx+b, (x-, ln2)
+            p2.x = pa.x-border;
+            p2.y = ln2.k*p2.x+ln2.b;
+            //x=any, y=kx+b, (x-, ln1)
+            p3.x = pa.x-border;
+            p3.y = ln1.k*p2.x+ln1.b;
+            //x=any, y=kx+b, (x+, ln2)
+            p4.x = pa.x+border;
+            p4.y = ln2.k*p2.x+ln2.b;
+        }
+        if (kbn.X) {
+            //x=any, y=kx+b, (x+, ll1)
+            p1.x = pa.x+border;
+            p1.y = ll1.k*p1.x+ll1.b;
+            //x=any, y=kx+b, (x-, ll2)
+            p2.x = pa.x-border;
+            p2.y = ll2.k*p2.x+ll2.b;
+            //x=any, y=kx+b, (x-, ll1)
+            p3.x = pa.x-border;
+            p3.y = ll1.k*p1.x+ll1.b;
+            //x=any, y=kx+b, (x+, ll2)
+            p4.x = pa.x+border;
+            p4.y = ll2.k*p2.x+ll2.b;
+        }
+        
+        //判断p1还是p2落在路径里
+        UIBezierPath * path = [UIBezierPath bezierPath];
+        [path moveToPoint:WZZShapeHandler_LinkedObjectToPoint(linkArray.array.firstObject)];
+        for (int i = 1; i < linkArray.array.count; i++) {
+            [path addLineToPoint:WZZShapeHandler_LinkedObjectToPoint(linkArray.array[i])];
+        }
+        CGPoint insidePoint;
+        if ([path containsPoint:p1]) {
+            insidePoint = p1;
+        } else if ([path containsPoint:p2]) {
+            insidePoint = p2;
+        } else if ([path containsPoint:p3]) {
+            insidePoint = p3;
+        } else {
+            insidePoint = p4;
+        }
+        
+        [returnArr addObject:[NSValue valueWithCGPoint:insidePoint]];
+    }
+    
+    return returnArr;
+}
+
 //显示点
 + (void)showPointWithNode:(SCNNode *)node
                    points:(NSArray <NSValue *>*)points
@@ -375,12 +507,7 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
     NSArray * windowsArray = [NSArray arrayWithArray:self.allUpWindows];
     
     NSMutableDictionary * allDataDic = [NSMutableDictionary dictionary];
-    NSMutableArray * lineArr = [NSMutableArray array];
-    NSMutableArray * glassArr = [NSMutableArray array];
-    NSMutableArray * zhongTingArr = [NSMutableArray array];
-    allDataDic[@"line"] = lineArr;
-    allDataDic[@"glass"] = glassArr;
-    allDataDic[@"zhongTing"] = zhongTingArr;
+    
     for (int i = 0; i < windowsArray.count; i++) {
         WZZWindowNode * windowNode = windowsArray[i];
         SCNVector3 upTV3 = SCNVector3Make(windowNode.borderUpTing.startPoint.x, windowNode.borderUpTing.startPoint.y, 0);
@@ -414,11 +541,15 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         WZZShapeHandler_FromTo shuTingType = 0;
         WZZShapeHandler_FromTo hengTingType = 0;
         
-        
         //计算尺寸
         CalculationFormula hCalType = (CalculationFormula)hengTingType;
         CalculationFormula vCalType = (CalculationFormula)shuTingType;
+        
         //压线尺寸
+        if (!allDataDic[@"yaxian"]) {
+            allDataDic[@"yaxian"] = [NSMutableArray array];
+        }
+        NSMutableArray * lineArr = allDataDic[@"yaxian"];
         CGFloat lineH = [DoorWindowCalculationFormulaObjective DoorWindowCircleCalculationFormula:hCalType distance:hengTing];
         CGFloat lineV = [DoorWindowCalculationFormulaObjective DoorWindowCircleCalculationFormula:vCalType distance:shuTing];
         [lineArr addObject:[NSString stringWithFormat:@"%.2lf", lineH]];
@@ -426,11 +557,50 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
         [lineArr addObject:[NSString stringWithFormat:@"%.2lf", lineV]];
         [lineArr addObject:[NSString stringWithFormat:@"%.2lf", lineV]];
         
-        //玻璃尺寸
-        CGFloat glassH = [DoorWindowCalculationFormulaObjective DoorWindowGlassCalculationFormula:hCalType distance:hengTing];
-        CGFloat glassV = [DoorWindowCalculationFormulaObjective DoorWindowGlassCalculationFormula:vCalType distance:shuTing];
-        [glassArr addObject:[NSString stringWithFormat:@"%.2lf", glassH]];
-        [glassArr addObject:[NSString stringWithFormat:@"%.2lf", glassV]];
+        //计算填充物
+        if (windowNode.insideContent.insideType != WZZInsideNodeContentType_None && windowNode.insideContent.insideType != WZZInsideNodeContentType_Turn) {
+            if ([windowNode.insideContent.insideFill isKindOfClass:[WZZTextureFillNode class]]) {
+                //填充为材质
+                WZZTextureFillNode * node = (WZZTextureFillNode *)windowNode.insideContent.insideFill;
+                switch (node.fillTexture) {
+                    case WZZTextureFillNode_textureType_Glass:
+                    {
+                        if (!allDataDic[@"boli"]) {
+                            allDataDic[@"boli"] = [NSMutableArray array];
+                        }
+                        NSArray * tmpArr = [node handleData];
+                        [allDataDic[@"boli"] addObjectsFromArray:tmpArr];
+                    }
+                        break;
+                        
+                    default:
+                        break;
+                }
+            } else if ([windowNode.insideContent.insideFill isKindOfClass:[WZZShanFillNode class]]) {
+                WZZShanFillNode * node = (WZZShanFillNode *)windowNode.insideContent.insideFill;
+                //填充为扇
+                WZZShanFillNode * fill = (WZZShanFillNode *)windowNode.insideContent.insideFill;
+                switch (fill.shanType) {
+                    case WZZShanFillNode_ShanType_NormalShan:
+                    {
+                        if (!allDataDic[@"shan"]) {
+                            allDataDic[@"shan"] = [NSMutableArray array];
+                        }
+                        NSMutableDictionary * shanDic = [NSMutableDictionary dictionary];
+                        [allDataDic[@"shan"] addObject:shanDic];
+                        shanDic[@"shan"] = [node handleData];//扇
+                        shanDic[@"shan_sha"] = [node handleShaData];//纱窗
+                        shanDic[@"shan_inside"] = [node handleShanInsideData];//内容
+                        shanDic[@"shan_yaxian"] = [node handleShanLineData];//压线
+                        shanDic[@"shan_turn"] = [node handleTurnData];//转向框
+                    }
+                        break;
+                        
+                    default:
+                        break;
+                }
+            }
+        }
     }
     
     //挺尺寸
@@ -438,6 +608,7 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
     for (int i = 0; i < allTingArr.count; i++) {
         CGFloat tingLength = 0;
         WZZTingNode * tingNode = allTingArr[i];
+        //确保只有中挺参与挺尺寸计算
         if ([tingNode isKindOfClass:[WZZZhongTingNode class]]) {
             WZZZhongTingNode * zhongTing = (WZZZhongTingNode *)tingNode;
             WZZInsideNode * insideNode = (WZZInsideNode *)zhongTing.superNode;
@@ -478,6 +649,10 @@ void __getPointsFromBezierPath(void * info, const CGPathElement *element) {
                 tingLength = [DoorWindowCalculationFormulaObjective DoorWindowCentreGalssCalculationFormula:tingType distance:shuTing];
             }
             
+            if (!allDataDic[@"zhongting"]) {
+                allDataDic[@"zhongting"] = [NSMutableArray array];
+            }
+            NSMutableArray * zhongTingArr = allDataDic[@"zhongting"];
             [zhongTingArr addObject:[NSString stringWithFormat:@"%.2lf", tingLength]];
         }
     }

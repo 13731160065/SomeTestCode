@@ -26,20 +26,17 @@
     switch (sender.selectedSegmentIndex) {
         case 0:
         {
-            [WZZShapeHandler shareInstance].insideFillType = WZZTextureFillNode_textureType_Glass;
-            [WZZShapeHandler shareInstance].insideContentType = WZZInsideNodeContentType_Fill;
+            [WZZShapeHandler shareInstance].insideContentType = WZZInsideNodeContentType_Fill_Texture_Glass;
         }
             break;
         case 1:
         {
-            [WZZShapeHandler shareInstance].insideFillType = WZZTextureFillNode_textureType_Sha;
-            [WZZShapeHandler shareInstance].insideContentType = WZZInsideNodeContentType_Fill;
+            [WZZShapeHandler shareInstance].insideContentType = WZZInsideNodeContentType_Fill_Shan_NormalShan;
         }
             break;
         case 2:
         {
-            [WZZShapeHandler shareInstance].insideFillType = WZZShanFillNode_ShanType_NormalShan;
-            [WZZShapeHandler shareInstance].insideContentType = WZZInsideNodeContentType_Window;
+            [WZZShapeHandler shareInstance].insideContentType = WZZInsideNodeContentType_Turn;
         }
             break;
             

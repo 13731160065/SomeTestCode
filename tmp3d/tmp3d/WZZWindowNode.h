@@ -12,11 +12,6 @@
 @interface WZZWindowNode : SCNNode
 
 /**
- 是否有边框
- */
-@property (nonatomic, assign) BOOL hasBorder;
-
-/**
  内部点，如果没边框，内部点和外部点相等
  */
 @property (nonatomic, strong) NSArray <NSValue *>* insetPoints;
@@ -63,42 +58,55 @@
 @property (nonatomic, assign) BOOL isRootWindow;
 
 /**
+ 窗体边框类型
+ */
+@property (nonatomic, assign) WZZShapeHandler_WindowBorderType windowBorderType;
+
+/**
  创建window
 
  @param leftH 左边高
  @param rightH 右边高
  @param downWidth 下边宽
- @param hasBorder 有没有框
+ @param windowBorderType 有没有框
  @return 实例
  */
 + (instancetype)nodeWithLeftHeight:(CGFloat)leftH
                        rightHeight:(CGFloat)rightH
                          downWidth:(CGFloat)downWidth
-                         hasBorder:(BOOL)hasBorder;
+                  windowBorderType:(WZZShapeHandler_WindowBorderType)windowBorderType;
 
 /**
  创建window
  
  @param height 左边高
  @param width 下边宽
- @param hasBorder 有没有框
+ @param windowBorderType 有没有框
  @return 实例
  */
 + (instancetype)nodeWithHeight:(CGFloat)height
                          width:(CGFloat)width
-                     hasBorder:(BOOL)hasBorder;
+              windowBorderType:(WZZShapeHandler_WindowBorderType)windowBorderType;
 
 /**
  创建window
 
  @param points 点数组
- @param hasBorder 有没有边
+ @param windowBorderType 边框类型
  @return 实例
  */
 + (instancetype)nodeWithPoints:(NSArray <NSValue *>*)points
-                     hasBorder:(BOOL)hasBorder;
+              windowBorderType:(WZZShapeHandler_WindowBorderType)windowBorderType;
 
 //点击
 - (void)nodeClick:(SCNHitTestResult *)result;
+
+
+/**
+ 切换转向框状态
+ ，只有转向框和无状态可以互相切换，主框不能切换状态
+ @param turnBorderType 状态
+ */
+- (void)changeTurnBorderType:(WZZShapeHandler_WindowBorderType)turnBorderType;
 
 @end

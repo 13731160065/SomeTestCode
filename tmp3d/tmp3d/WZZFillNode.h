@@ -8,8 +8,14 @@
 
 #import <SceneKit/SceneKit.h>
 #import "WZZShapeHandler.h"
+#import "WZZInsideNode.h"
 
 @interface WZZFillNode : SCNNode
+
+/**
+ 父节点
+ */
+@property (nonatomic, weak) WZZInsideNode * superNode;
 
 /**
  路径点
@@ -33,9 +39,14 @@
 
 /**
  计算数据
-
- @param dataBlock 回调
  */
-- (void)handleDataWith:(void(^)(id returnData))dataBlock;
+- (NSArray <NSString *>*)handleData;
+
+/**
+ 计算转向框尺寸
+ 
+ @return 尺寸
+ */
+- (NSArray <NSString *>*)handleTurnData;
 
 @end

@@ -130,17 +130,17 @@ typedef struct {
     //    [scene.rootNode addChildNode:node233];
     
     //矩形
-    WZZWindowNode * node233 = [WZZWindowNode nodeWithHeight:hei width:wid hasBorder:YES];
+    WZZWindowNode * node233 = [WZZWindowNode nodeWithHeight:hei width:wid windowBorderType:WZZShapeHandler_WindowBorderType_RootWindowBorder];
     [mainScene.rootNode addChildNode:node233];
 #else
     //多边形
     NSMutableArray * arr = [NSMutableArray array];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, 0)]];
-    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, widHei)]];
-    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei/2.0f, widHei+10)]];
-    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei+10, widHei/3)]];
-    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(widHei, 0)]];
-    WZZWindowNode * node233 = [WZZWindowNode nodeWithPoints:arr hasBorder:YES];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, hei)]];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(wid/2.0f, hei+10)]];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(wid+10, hei/3)]];
+    [arr addObject:[NSValue valueWithCGPoint:CGPointMake(wid, 0)]];
+    WZZWindowNode * node233 = [WZZWindowNode nodeWithPoints:arr windowBorderType:WZZShapeHandler_WindowBorderType_RootWindowBorder];
 #endif
     
     node233.isRootWindow = YES;
@@ -160,17 +160,17 @@ typedef struct {
     // 中梃小面
     doorHandler.centreSmallFace = 47.0f;
     // 中梃大面
-    doorHandler.centreLargeFace = 106.0f;
+    doorHandler.centreLargeFace = 76.0f;
     
     // 转向框小面
-    doorHandler.toTurnToCircleSmallFace = 71.0f;
+    doorHandler.toTurnToCircleSmallFace = 47.0f;
     // 转向框大面
-    doorHandler.toTurnToCircleLargeFace = 93.0f;
+    doorHandler.toTurnToCircleLargeFace = 76.0f;
     
     // 扇小面扣槽尺寸
-    doorHandler.fanSmallGroovesFace = 71.0f;
+    doorHandler.fanSmallGroovesFace = 47.0f;
     // 扇大面扣槽尺寸
-    doorHandler.fanLargeGroovesFace = 93.0f;
+    doorHandler.fanLargeGroovesFace = 76.0f;
     
     // 计算玻璃时一个不确定数。需要后台返回
     doorHandler.galssVariable = 15.0f;

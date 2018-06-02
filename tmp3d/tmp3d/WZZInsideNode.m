@@ -17,7 +17,7 @@
 
 @implementation WZZInsideNode
 
-- (instancetype)initInsideWithWindow:(WZZWindowNode *)node
+- (instancetype)initInsideWithWindow:(WZZWindowNode *)node nodeLevel:(NSInteger)nodeLevel
 {
     self = [super init];
     if (self) {
@@ -45,10 +45,14 @@
         self.position = SCNVector3Make(point1.x, point1.y, 0);
         self.geometry.firstMaterial.transparency = 0.0f;
         
-        //设置node等级并使全局等级++
-        self.nodeLevel = WZZInsideNode_Node_Level++;
+        self.nodeLevel = nodeLevel;
     }
     return self;
+}
+
+- (instancetype)initInsideWithWindow:(WZZWindowNode *)node {
+    //自动设置node等级并使全局等级++
+    return [self initInsideWithWindow:node nodeLevel:WZZInsideNode_Node_Level++];
 }
 
 - (void)cutWithPosition:(CGPoint)point {
@@ -86,7 +90,7 @@
                 [w1PointArr addObject:[NSValue valueWithCGPoint:hp1]];
                 [w1PointArr addObject:[NSValue valueWithCGPoint:hp4]];
                 [w1PointArr addObject:_points[3]];
-                WZZWindowNode * window1 = [WZZWindowNode nodeWithPoints:w1PointArr hasBorder:NO];
+                WZZWindowNode * window1 = [WZZWindowNode nodeWithPoints:w1PointArr windowBorderType:WZZShapeHandler_WindowBorderType_None];
                 [self addChildNode:window1];
                 window1.borderUpTing = self.insideZhongTing;
                 window1.borderLeftTing = self.superWindow.borderLeftTing;
@@ -102,7 +106,7 @@
                 [w2PointArr addObject:[NSValue valueWithCGPoint:w2_2]];
                 [w2PointArr addObject:[NSValue valueWithCGPoint:w2_3]];
                 [w2PointArr addObject:[NSValue valueWithCGPoint:w2_4]];
-                WZZWindowNode * window2 = [WZZWindowNode nodeWithPoints:w2PointArr hasBorder:NO];
+                WZZWindowNode * window2 = [WZZWindowNode nodeWithPoints:w2PointArr windowBorderType:WZZShapeHandler_WindowBorderType_None];
                 [self addChildNode:window2];
                 [window2 setPosition:SCNVector3Make(0, hp3.y, 0)];
                 window2.borderUpTing = self.superWindow.borderUpTing;
@@ -153,7 +157,7 @@
         [w1PointArr addObject:_points[1]];
         [w1PointArr addObject:[NSValue valueWithCGPoint:hp2]];
         [w1PointArr addObject:[NSValue valueWithCGPoint:hp1]];
-        WZZWindowNode * window1 = [WZZWindowNode nodeWithPoints:w1PointArr hasBorder:NO];
+        WZZWindowNode * window1 = [WZZWindowNode nodeWithPoints:w1PointArr windowBorderType:WZZShapeHandler_WindowBorderType_None];
         [self addChildNode:window1];
         window1.borderUpTing = self.superWindow.borderUpTing;
         window1.borderLeftTing = self.superWindow.borderLeftTing;
@@ -169,7 +173,7 @@
         [w2PointArr addObject:[NSValue valueWithCGPoint:w2_2]];
         [w2PointArr addObject:[NSValue valueWithCGPoint:w2_3]];
         [w2PointArr addObject:[NSValue valueWithCGPoint:w2_4]];
-        WZZWindowNode * window2 = [WZZWindowNode nodeWithPoints:w2PointArr hasBorder:NO];
+        WZZWindowNode * window2 = [WZZWindowNode nodeWithPoints:w2PointArr windowBorderType:WZZShapeHandler_WindowBorderType_None];
         [self addChildNode:window2];
         [window2 setPosition:SCNVector3Make(hp4.x, 0, 0)];
         window2.borderUpTing = self.superWindow.borderUpTing;
@@ -187,21 +191,26 @@
 - (void)fillWithInside:(WZZInsideNodeContentType)fillType {
     self.insideType = fillType;
     switch (fillType) {
-        case WZZInsideNodeContentType_None:
+        case WZZInsideNodeContentType_Fill_Texture_Glass:
         {
-            self.geometry.firstMaterial.transparency = 0.0f;
+            
+            WZZTextureFillNode * node = [WZZTextureFillNode fillNodeWithPointsArray:self.points deep:WZZInsideNode_BorderWidth/2.0f texture:WZZTextureFillNode_textureType_Glass];
+            [self addChildNode:node];
+            node.superNode = self;
+            self.insideFill = node;
         }
             break;
-        case WZZInsideNodeContentType_Fill:
+        case WZZInsideNodeContentType_Fill_Shan_NormalShan:
         {
-            WZZTextureFillNode * node = [WZZTextureFillNode fillNodeWithPointsArray:self.points deep:WZZInsideNode_BorderWidth/2.0f texture:[WZZShapeHandler shareInstance].insideFillType];
+            WZZShanFillNode * node = [WZZShanFillNode fillNodeWithPointsArray:self.points deep:WZZInsideNode_BorderWidth shanType:WZZShanFillNode_ShanType_NormalShan shanBorderWidth:WZZInsideNode_BorderWidth];
             [self addChildNode:node];
+            node.superNode = self;
+            self.insideFill = node;
         }
             break;
-        case WZZInsideNodeContentType_Window:
+        case WZZInsideNodeContentType_Turn:
         {
-            WZZShanFillNode * node = [WZZShanFillNode fillNodeWithPointsArray:self.points deep:WZZInsideNode_BorderWidth shanType:[WZZShapeHandler shareInstance].insideFillType shanBorderWidth:WZZInsideNode_BorderWidth];
-            [self addChildNode:node];
+            [self.superWindow changeTurnBorderType:self.superWindow.windowBorderType];
         }
             break;
 
@@ -214,16 +223,26 @@
     NSLog(@"inside点击");
     CGPoint touchPoint = CGPointMake([result localCoordinates].x, [result localCoordinates].y);
     if (self.insideType == WZZInsideNodeContentType_None) {
+        //如果是空的可以随意操作
         if ([WZZShapeHandler shareInstance].insideAction == WZZInsideNode_Action_Cut) {
             //切割
             [self cutWithPosition:touchPoint];
-        }if ([WZZShapeHandler shareInstance].insideAction == WZZInsideNode_Action_Fill) {
+        } if ([WZZShapeHandler shareInstance].insideAction == WZZInsideNode_Action_Fill) {
             //填充
             [self fillWithInside:[WZZShapeHandler shareInstance].insideContentType];
         } else {
             //none
         }
+    } else if ([WZZShapeHandler shareInstance].insideContentType == WZZInsideNodeContentType_Turn) {
+        //如果内容不是空的，但填充是转向框，可以做转向框操作
+        [self fillWithInside:[WZZShapeHandler shareInstance].insideContentType];
     }
+}
+
+//重写删除方法，删除中挺
+- (void)removeFromParentNode {
+    [[[WZZShapeHandler shareInstance] allTings] removeObject:self.insideZhongTing];
+    [super removeFromParentNode];
 }
 
 @end

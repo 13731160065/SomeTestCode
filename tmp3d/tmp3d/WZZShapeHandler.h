@@ -28,9 +28,14 @@
 
 typedef enum : NSUInteger {
     WZZInsideNodeContentType_None = 0,//没东西
-    WZZInsideNodeContentType_Window,//框
-    WZZInsideNodeContentType_Fill//填充
+    WZZInsideNodeContentType_Fill_Texture_Glass,//玻璃
+    WZZInsideNodeContentType_Fill_Shan_NormalShan,//扇
+    WZZInsideNodeContentType_Turn//转向框，比较特殊，添加转向框会将当前inside删掉，重新创建inside，赋值给父window，并在window和inside之间添加转向框，转向框属于window，是window的一种边。纯外边框无法添加转向框，要实现该特殊例子特殊处理即可
 } WZZInsideNodeContentType;
+
+typedef enum : NSUInteger {
+    WZZInsideNode_FillType_None,//无
+} WZZInsideNode_FillType;
 
 typedef enum : NSUInteger {
     WZZInsideNode_V = 0,//垂直
@@ -42,6 +47,18 @@ typedef enum : NSUInteger {
     WZZInsideNode_Action_Cut,//切
     WZZInsideNode_Action_Fill//填充
 } WZZInsideNode_Action;
+
+typedef enum : NSUInteger {
+    WZZShapeHandler_FromTo_BToB,//边到边
+    WZZShapeHandler_FromTo_BToC,//边到中
+    WZZShapeHandler_FromTo_CToC//中到中
+} WZZShapeHandler_FromTo;//挺间关系
+
+typedef enum : NSUInteger {
+    WZZShapeHandler_WindowBorderType_None,//无
+    WZZShapeHandler_WindowBorderType_RootWindowBorder,//主窗体外框
+    WZZShapeHandler_WindowBorderType_TurnBorder//转向框
+} WZZShapeHandler_WindowBorderType;
 
 @interface WZZShapeHandler : NSObject
 
@@ -64,11 +81,6 @@ typedef enum : NSUInteger {
  内容填充类型
  */
 @property (nonatomic, assign) WZZInsideNodeContentType insideContentType;
-
-/**
- 具体内容填充物(可以是扇或材质，WZZFillNode)
- */
-@property (nonatomic, assign) NSInteger insideFillType;
 
 /**
  边框材质
@@ -128,6 +140,9 @@ typedef enum : NSUInteger {
 
 //计算多边形边框
 + (NSArray <NSValue *>*)makeAnyBorder2WithLinkArray:(WZZLinkedArray *)linkArray;
+
++ (NSArray <NSValue *>*)makeAnyBorder3WithLinkArray:(WZZLinkedArray *)linkArray
+                                             border:(CGFloat)border;
 
 /**
  测试时快速显示点

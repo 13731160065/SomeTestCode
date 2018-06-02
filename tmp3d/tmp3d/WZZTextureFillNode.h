@@ -9,9 +9,7 @@
 #import "WZZFillNode.h"
 
 typedef enum : NSUInteger {
-    WZZTextureFillNode_textureType_None,//无
-    WZZTextureFillNode_textureType_Glass,//玻璃
-    WZZTextureFillNode_textureType_Sha//纱窗
+    WZZTextureFillNode_textureType_Glass//玻璃
 } WZZTextureFillNode_textureType;
 
 @interface WZZTextureFillNode : WZZFillNode

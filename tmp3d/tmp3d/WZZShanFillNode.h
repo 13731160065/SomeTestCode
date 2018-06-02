@@ -9,7 +9,6 @@
 #import "WZZFillNode.h"
 
 typedef enum : NSUInteger {
-    WZZShanFillNode_ShanType_None,//没有
     WZZShanFillNode_ShanType_NormalShan//最普通的扇
 } WZZShanFillNode_ShanType;
 
@@ -37,5 +36,26 @@ typedef enum : NSUInteger {
                                    deep:(CGFloat)deep
                                shanType:(WZZShanFillNode_ShanType)shanType
                         shanBorderWidth:(CGFloat)shanBorderWidth;
+
+/**
+ 计算纱窗尺寸
+
+ @return 尺寸
+ */
+- (NSArray <NSString *>*)handleShaData;
+
+/**
+ 计算扇压线尺寸
+
+ @return 尺寸
+ */
+- (NSArray <NSString *>*)handleShanLineData;
+
+/**
+ 计算扇玻璃尺寸
+
+ @return 尺寸
+ */
+- (NSArray <NSString *>*)handleShanInsideData;
 
 @end

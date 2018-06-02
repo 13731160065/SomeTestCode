@@ -18,9 +18,10 @@
 
 //用点创建window
 + (instancetype)nodeWithPoints:(NSArray <NSValue *>*)points
-                     hasBorder:(BOOL)hasBorder {
+              windowBorderType:(WZZShapeHandler_WindowBorderType)windowBorderType{
     WZZWindowNode * node = [WZZWindowNode node];
-    [node setupNodeWithPoints:points hasBorder:hasBorder];
+    [node setupNodeWithPoints:points windowBorderType:windowBorderType borderWidth:WZZWindowNode_BorderWidth];
+    [node setupInside];
     [[[WZZShapeHandler shareInstance] allWindows] addObject:node];
     node.geometry.firstMaterial.transparency = 0.0f;
     return node;
@@ -30,56 +31,50 @@
 + (instancetype)nodeWithLeftHeight:(CGFloat)leftH
                        rightHeight:(CGFloat)rightH
                          downWidth:(CGFloat)downWidth
-                         hasBorder:(BOOL)hasBorder {
+                  windowBorderType:(WZZShapeHandler_WindowBorderType)windowBorderType {
     NSMutableArray * arr = [NSMutableArray array];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, 0)]];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(0, leftH)]];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(downWidth, rightH)]];
     [arr addObject:[NSValue valueWithCGPoint:CGPointMake(downWidth, 0)]];
-    WZZWindowNode * node233 = [WZZWindowNode nodeWithPoints:arr hasBorder:YES];
+    WZZWindowNode * node233 = [WZZWindowNode nodeWithPoints:arr windowBorderType:windowBorderType];
     [node233 setPosition:SCNVector3Make(-downWidth/2, -(leftH+rightH)/4.0f, 0)];
     return node233;
 }
 
 + (instancetype)nodeWithHeight:(CGFloat)height
                          width:(CGFloat)width
-                     hasBorder:(BOOL)hasBorder {
-    return [self nodeWithLeftHeight:height rightHeight:height downWidth:width hasBorder:hasBorder];
+              windowBorderType:(WZZShapeHandler_WindowBorderType)windowBorderType {
+    return [self nodeWithLeftHeight:height rightHeight:height downWidth:width windowBorderType:windowBorderType];
 }
 
 //初始化window
-- (void)setupNodeWithPoints:(NSArray <NSValue *>*)points hasBorder:(BOOL)hasBorder {
+- (void)setupNodeWithPoints:(NSArray <NSValue *>*)points
+           windowBorderType:(WZZShapeHandler_WindowBorderType)windowBorderType
+                borderWidth:(CGFloat)borderWidth {
     //初始化window
-    self.hasBorder = hasBorder;
+    self.windowBorderType = windowBorderType;
     self.outPoints = [NSArray arrayWithArray:points];
-    if (hasBorder) {
-#if 1
+    if (windowBorderType == WZZShapeHandler_WindowBorderType_None) {
+        self.insetPoints = [NSArray arrayWithArray:points];
+    } else {
+#if 0
         if (points.count == 3) {
-            [self makeBorder3WithPoints:points];
+            [self makeBorder3WithPoints:points border:borderWidth];
         } else {
-            [self makeBorderWithPoints:points];
+            [self makeBorderWithPoints:points border:borderWidth];
         }
 #else
-        [self makeAnyBorderWithPoints:points];
+        [self makeAnyBorderWithPoints:points border:borderWidth];
 #endif
         [self createBorderTingWithOutPoints:self.outPoints inPoints:self.insetPoints];
-    } else {
-        self.insetPoints = [NSArray arrayWithArray:points];
     }
-    
-    //初始化window的insideNode
-    WZZInsideNode * InsideNode = [[WZZInsideNode alloc] initInsideWithWindow:self];
-    [self addChildNode:InsideNode];
-    self.insideContent = InsideNode;
 }
 
-- (void)makeAnyBorderWithPoints:(NSArray *)points {
-    if (points.count < 3) {
-        return;
-    }
-    
-    [WZZShapeHandler showPointWithNode:self points:points color:[UIColor redColor]];
-    [WZZShapeHandler showPointWithNode:self points:[WZZShapeHandler makeAnyBorder2WithLinkArray:[WZZLinkedArray arrayWithArray:points]] color:[UIColor greenColor]];
+- (void)setupInside {
+    //初始化window的insideNode
+    self.insideContent = [[WZZInsideNode alloc] initInsideWithWindow:self];
+    [self addChildNode:self.insideContent];
 }
 
 //创建边框
@@ -114,22 +109,35 @@
 
 //仅适用于矩形的边框
 - (void)setupRectBorder:(NSArray <WZZWindowBorderTingNode *>*)borderArr {
-    self.borderLeftTing = borderArr[0];
-    self.borderUpTing = borderArr[1];
-    self.borderRightTing = borderArr[2];
-    self.borderDownTing = borderArr[3];
+    if (self.windowBorderType == WZZShapeHandler_WindowBorderType_RootWindowBorder) {
+        self.borderLeftTing = borderArr[0];
+        self.borderUpTing = borderArr[1];
+        self.borderRightTing = borderArr[2];
+        self.borderDownTing = borderArr[3];
+        
+        //添加至全部挺中
+        [[[WZZShapeHandler shareInstance] allTings] addObjectsFromArray:borderArr];
+    }
+}
+
+- (void)makeAnyBorderWithPoints:(NSArray *)points
+                         border:(CGFloat)border{
+    if (points.count < 3) {
+        return;
+    }
     
-    //添加至全部挺中
-    [[[WZZShapeHandler shareInstance] allTings] addObjectsFromArray:borderArr];
+    NSArray <NSValue *>* mpArr = [WZZShapeHandler makeAnyBorder3WithLinkArray:[WZZLinkedArray arrayWithArray:points] border:border];
+    self.insetPoints = [NSArray arrayWithArray:mpArr];
 }
 
 //创建4边形边框
-- (void)makeBorderWithPoints:(NSArray *)points {
+- (void)makeBorderWithPoints:(NSArray *)points
+                      border:(CGFloat)border {
     if (points.count != 4) {
         return;
     }
     
-    NSArray <NSValue *>* mpArr = [WZZShapeHandler makeBorderWithLinkArray:[WZZLinkedArray arrayWithArray:points] border:WZZWindowNode_BorderWidth];
+    NSArray <NSValue *>* mpArr = [WZZShapeHandler makeBorderWithLinkArray:[WZZLinkedArray arrayWithArray:points] border:border];
     self.insetPoints = [NSArray arrayWithArray:mpArr];
 #if 0
     CGPoint point1 = [points[0] CGPointValue];
@@ -167,12 +175,13 @@
 }
 
 //创建3边形边框
-- (void)makeBorder3WithPoints:(NSArray *)points {
+- (void)makeBorder3WithPoints:(NSArray *)points
+                       border:(CGFloat)border {
     if (points.count != 3) {
         return;
     }
     
-    NSArray <NSValue *>* mpArr = [WZZShapeHandler makeBorder3WithLinkArray:[WZZLinkedArray arrayWithArray:points] border:WZZWindowNode_BorderWidth];
+    NSArray <NSValue *>* mpArr = [WZZShapeHandler makeBorder3WithLinkArray:[WZZLinkedArray arrayWithArray:points] border:border];
     self.insetPoints = [NSArray arrayWithArray:mpArr];
     
     CGPoint point1 = [points[0] CGPointValue];
@@ -225,6 +234,32 @@
     shape.firstMaterial.diffuse.contents = [UIColor colorWithRed:0.0f green:0.3f blue:1.0f alpha:0.5f];
     
     self.geometry = shape;
+}
+
+//修改转向框状态
+- (void)changeTurnBorderType:(WZZShapeHandler_WindowBorderType)turnBorderType {
+    //转换边框类型
+    if (turnBorderType == WZZShapeHandler_WindowBorderType_RootWindowBorder) {
+        return;
+    } else if (turnBorderType == WZZShapeHandler_WindowBorderType_None) {
+        turnBorderType = WZZShapeHandler_WindowBorderType_TurnBorder;
+    } else if (turnBorderType == WZZShapeHandler_WindowBorderType_TurnBorder) {
+        turnBorderType = WZZShapeHandler_WindowBorderType_None;
+    }
+    [self enumerateChildNodesUsingBlock:^(SCNNode * _Nonnull child, BOOL * _Nonnull stop) {
+        [child removeFromParentNode];
+    }];
+    
+    //旧inside
+    WZZInsideNode * oldNode = self.insideContent;
+    
+    //新初始化window
+    [self setupNodeWithPoints:_outPoints windowBorderType:turnBorderType borderWidth:WZZWindowNode_BorderWidth/2.0f];
+    self.geometry.firstMaterial.transparency = 0.0f;
+    
+    //配置window的insideNode
+    self.insideContent = [[WZZInsideNode alloc] initInsideWithWindow:self nodeLevel:oldNode.nodeLevel];
+    [self addChildNode:self.insideContent];
 }
 
 #pragma mark - 属性

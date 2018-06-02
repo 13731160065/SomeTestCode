@@ -26,7 +26,7 @@
     _mainImageView.layer.borderWidth = 1.0f;
     
     [[WZZShapeHandler shareInstance] getRectAllBorderData:^(id borderData) {
-        _mainTextView.text = [NSString stringWithFormat:@"\n压线尺寸:\n%@\n玻璃尺寸\n%@\n中挺尺寸\n%@", borderData[@"line"], borderData[@"glass"], borderData[@"zhongTing"]];
+        _mainTextView.text = [NSString stringWithFormat:@"\n压线尺寸:\n%@\n玻璃尺寸:\n%@\n中挺尺寸:\n%@\n扇尺寸:%@", borderData[@"yaxian"], borderData[@"boli"], borderData[@"zhongting"], borderData[@"shan"]];
     }];
 }
 

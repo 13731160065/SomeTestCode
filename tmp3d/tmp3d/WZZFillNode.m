@@ -28,8 +28,8 @@
 }
 
 //计算数据，子类计算
-- (void)handleDataWith:(void (^)(id))dataBlock {
-    
+- (NSArray <NSString *>*)handleData {
+    return [NSArray array];
 }
 
 @end
