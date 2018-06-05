@@ -38,6 +38,8 @@ typedef struct {
 @property (weak, nonatomic) IBOutlet UITextField *heiTF;
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
 @property (weak, nonatomic) IBOutlet UIButton *arButton;
+@property (weak, nonatomic) IBOutlet UISwitch *hvSwitch;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *actionSeg;
 
 @end
 
@@ -53,6 +55,7 @@ typedef struct {
         WZZSettingParamVC * vc = [[WZZSettingParamVC alloc] init];
         [self presentViewController:vc animated:YES completion:nil];
     }}]];
+    
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
                          @"name":@"计算尺寸",
                          @"action":^() {
@@ -60,6 +63,7 @@ typedef struct {
         vc.image = [self snapshot:mainSCNV];
         [self presentViewController:vc animated:YES completion:nil];
     }}]];
+    
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
                          @"name":@"改变挺材质",
                          @"action":^() {
@@ -78,10 +82,31 @@ typedef struct {
         WZZChangeFillVC * vc = [[WZZChangeFillVC alloc] init];
         vc.textureBlock = ^(NSString *textureName) {
             NSMutableDictionary * dic = dataArr[3];
-            dic[@"name"] = [NSString stringWithFormat:@"改变挺填充物 - %@", textureName];
+            dic[@"name"] = [NSString stringWithFormat:@"改变填充物 - %@", textureName];
             [_mainTableView reloadData];
         };
         [self presentViewController:vc animated:YES completion:nil];
+    }}]];
+    
+    [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                                                                       @"name":@"清空",
+                                                                       @"action":^() {
+        [self resetNode];
+        [self resetUI];
+    }}]];
+    
+    [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                                                                       @"name":@"重建",
+                                                                       @"action":^() {
+        NSDictionary * makerDic = [[NSUserDefaults standardUserDefaults] objectForKey:@"makerDic"];
+        WZZWindowNode * windowNode = [WZZShapeHandler makeAllWindowWithDic:makerDic];
+        NSArray * arr = makerDic[@"outPoints"];
+        if (arr.count == 4) {
+            CGFloat offsetX = [[arr[2] componentsSeparatedByString:@","][1] doubleValue]/2.0f;
+            CGFloat offsetY = [[arr[1] componentsSeparatedByString:@","][1] doubleValue]/2.0f;
+            [windowNode setPosition:SCNVector3Make(windowNode.position.x-offsetX, windowNode.position.y-offsetY, windowNode.position.z)];
+        }
+        [mainScene.rootNode addChildNode:windowNode];
     }}]];
     
     //上部分视图
@@ -108,7 +133,7 @@ typedef struct {
     [mainSCNV addGestureRecognizer:tap];
 }
 
-- (void)setupWindowNode {
+- (void)resetNode {
     mainSCNV.scene = mainScene = [SCNScene scene];
     
     //恢复默认
@@ -117,6 +142,16 @@ typedef struct {
     }];
     //重置handler
     [WZZShapeHandler resetHandler];
+}
+
+- (void)resetUI {
+    _hvSwitch.on = NO;
+    _actionSeg.selectedSegmentIndex = 0;
+}
+
+- (void)setupWindowNode {
+    [self resetNode];
+    [self resetUI];
     
     CGFloat wid = _widTF.text.doubleValue;
     CGFloat hei = _heiTF.text.doubleValue;

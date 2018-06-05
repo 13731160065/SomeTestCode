@@ -9,6 +9,7 @@
 #import <SceneKit/SceneKit.h>
 #import "WZZShapeHandler.h"
 #import "WZZZhongTingNode.h"
+#import "WZZInsideDataMaker.h"
 @class WZZWindowNode;
 @class WZZFillNode;
 
@@ -16,6 +17,11 @@
 static NSInteger WZZInsideNode_Node_Level = 0;
 
 @interface WZZInsideNode : SCNNode
+
+/**
+ 内容数据
+ */
+@property (nonatomic, strong) WZZInsideDataMaker * insideMaker;
 
 /**
  node等级，越后创建的该数字越大
@@ -31,6 +37,11 @@ static NSInteger WZZInsideNode_Node_Level = 0;
  切割的方向
  */
 @property (nonatomic, assign) WZZInsideNode_HV insideCutHV;
+
+/**
+ 切割位置
+ */
+@property (nonatomic, assign) CGPoint cutPosition;
 
 /**
  点击将要执行的动作

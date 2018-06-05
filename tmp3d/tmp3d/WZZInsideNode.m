@@ -58,7 +58,10 @@
 - (void)cutWithPosition:(CGPoint)point {
     const CGFloat lineBorderWidth = WZZInsideNode_BorderWidth;
     
-    if ([WZZShapeHandler shareInstance].insideHV == WZZInsideNode_H) {
+    self.cutPosition = point;
+    self.insideAction = WZZInsideNode_Action_Cut;
+    
+    if (self.insideCutHV == WZZInsideNode_H) {
         //水平
         if (point.y) {
             CGPoint pointUp = CGPointMake(point.x, point.y+lineBorderWidth/2.0f);
@@ -79,7 +82,7 @@
                                     [NSValue valueWithCGPoint:hp4]];
                 
                 //创建横挺
-                WZZZhongTingNode * heightNode = [WZZZhongTingNode nodeWithPath:hpArr superNode:self tingHV:[WZZShapeHandler shareInstance].insideHV border:WZZInsideNode_BorderWidth];
+                WZZZhongTingNode * heightNode = [WZZZhongTingNode nodeWithPath:hpArr superNode:self tingHV:self.insideCutHV border:WZZInsideNode_BorderWidth];
                 [self addChildNode:heightNode];
                 heightNode.geometry.firstMaterial.diffuse.contents = WZZShapeHandlerTexture_Border;
                 self.insideZhongTing = heightNode;
@@ -146,7 +149,7 @@
                             [NSValue valueWithCGPoint:hp4]];
         
         //创建竖挺
-        WZZZhongTingNode * heightNode = [WZZZhongTingNode nodeWithPath:hpArr superNode:self tingHV:[WZZShapeHandler shareInstance].insideHV border:WZZInsideNode_BorderWidth];
+        WZZZhongTingNode * heightNode = [WZZZhongTingNode nodeWithPath:hpArr superNode:self tingHV:self.insideCutHV border:WZZInsideNode_BorderWidth];
         [self addChildNode:heightNode];
         heightNode.geometry.firstMaterial.diffuse.contents = WZZShapeHandlerTexture_Border;
         self.insideZhongTing = heightNode;
@@ -190,6 +193,7 @@
 
 - (void)fillWithInside:(WZZInsideNodeContentType)fillType {
     self.insideType = fillType;
+    self.insideAction = WZZInsideNode_Action_Fill;
     switch (fillType) {
         case WZZInsideNodeContentType_Fill_Texture_Glass:
         {
@@ -225,6 +229,7 @@
     if (self.insideType == WZZInsideNodeContentType_None) {
         //如果是空的可以随意操作
         if ([WZZShapeHandler shareInstance].insideAction == WZZInsideNode_Action_Cut) {
+            self.insideCutHV = [WZZShapeHandler shareInstance].insideHV;
             //切割
             [self cutWithPosition:touchPoint];
         } if ([WZZShapeHandler shareInstance].insideAction == WZZInsideNode_Action_Fill) {

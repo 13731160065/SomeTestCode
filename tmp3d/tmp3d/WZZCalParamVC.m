@@ -28,6 +28,10 @@
     [[WZZShapeHandler shareInstance] getRectAllBorderData:^(id borderData) {
         _mainTextView.text = [NSString stringWithFormat:@"\n压线尺寸:\n%@\n玻璃尺寸:\n%@\n中挺尺寸:\n%@\n扇尺寸:%@", borderData[@"yaxian"], borderData[@"boli"], borderData[@"zhongting"], borderData[@"shan"]];
     }];
+    
+    NSDictionary * makerDic = [WZZShapeHandler getAllMakerData];
+    _mainTextView.text = [NSString stringWithFormat:@"%@\n\n全部数据字典:%@", _mainTextView.text, makerDic];
+    [[NSUserDefaults standardUserDefaults] setObject:makerDic forKey:@"makerDic"];
 }
 
 - (IBAction)closeClick:(id)sender {

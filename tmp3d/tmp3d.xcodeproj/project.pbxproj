@@ -17,6 +17,8 @@
 		71777CCD20AF02D200F19CF3 /* mucai005.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71777CCC20AF02D200F19CF3 /* mucai005.jpg */; };
 		71777CCF20AF04E200F19CF3 /* met.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 71777CCE20AF04E100F19CF3 /* met.jpg */; };
 		717ED2B220B6AA280002AC35 /* WZZShapeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 717ED2B120B6AA280002AC35 /* WZZShapeHandler.m */; };
+		718E5D9E20C4D30A00CABFAE /* WZZWindowDataMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 718E5D9D20C4D30A00CABFAE /* WZZWindowDataMaker.m */; };
+		718E5DA120C4D31C00CABFAE /* WZZInsideDataMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 718E5DA020C4D31C00CABFAE /* WZZInsideDataMaker.m */; };
 		7191A84720AC43F300F729A4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7191A84620AC43F300F729A4 /* AppDelegate.m */; };
 		7191A84A20AC43F300F729A4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7191A84920AC43F300F729A4 /* ViewController.m */; };
 		7191A84D20AC43F300F729A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7191A84B20AC43F300F729A4 /* Main.storyboard */; };
@@ -82,6 +84,10 @@
 		71777CCE20AF04E100F19CF3 /* met.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = met.jpg; sourceTree = "<group>"; };
 		717ED2B020B6AA280002AC35 /* WZZShapeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZShapeHandler.h; sourceTree = "<group>"; };
 		717ED2B120B6AA280002AC35 /* WZZShapeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZShapeHandler.m; sourceTree = "<group>"; };
+		718E5D9C20C4D30A00CABFAE /* WZZWindowDataMaker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZWindowDataMaker.h; sourceTree = "<group>"; };
+		718E5D9D20C4D30A00CABFAE /* WZZWindowDataMaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZWindowDataMaker.m; sourceTree = "<group>"; };
+		718E5D9F20C4D31C00CABFAE /* WZZInsideDataMaker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZInsideDataMaker.h; sourceTree = "<group>"; };
+		718E5DA020C4D31C00CABFAE /* WZZInsideDataMaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZInsideDataMaker.m; sourceTree = "<group>"; };
 		7191A84220AC43F300F729A4 /* tmp3d.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tmp3d.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7191A84520AC43F300F729A4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7191A84620AC43F300F729A4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -207,8 +213,12 @@
 				7105505D20BE9E4E0041078E /* WZZARVC.xib */,
 				7146B05620B55B6D0097A23D /* WZZWindowNode.h */,
 				7146B05720B55B6D0097A23D /* WZZWindowNode.m */,
+				718E5D9C20C4D30A00CABFAE /* WZZWindowDataMaker.h */,
+				718E5D9D20C4D30A00CABFAE /* WZZWindowDataMaker.m */,
 				71647BFD20B62DFB0077728E /* WZZInsideNode.h */,
 				71647BFE20B62DFB0077728E /* WZZInsideNode.m */,
+				718E5D9F20C4D31C00CABFAE /* WZZInsideDataMaker.h */,
+				718E5DA020C4D31C00CABFAE /* WZZInsideDataMaker.m */,
 				719313F920BBD62400663B8F /* WZZFillNode.h */,
 				719313FA20BBD62400663B8F /* WZZFillNode.m */,
 				719313FC20BBDDE400663B8F /* WZZTextureFillNode.h */,
@@ -404,6 +414,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				718E5DA120C4D31C00CABFAE /* WZZInsideDataMaker.m in Sources */,
 				7191A84A20AC43F300F729A4 /* ViewController.m in Sources */,
 				7105505E20BE9E4E0041078E /* WZZARVC.m in Sources */,
 				7153838620B80EDC00A9DB3A /* WZZMakeQueueModel.m in Sources */,
@@ -418,6 +429,7 @@
 				7193140120BBDDF500663B8F /* WZZShanFillNode.m in Sources */,
 				71DDFE1720B7F06E00695935 /* WZZTingNode.m in Sources */,
 				71C6DF7420B2B591005085F9 /* WZZARManager.m in Sources */,
+				718E5D9E20C4D30A00CABFAE /* WZZWindowDataMaker.m in Sources */,
 				717ED2B220B6AA280002AC35 /* WZZShapeHandler.m in Sources */,
 				7191A84720AC43F300F729A4 /* AppDelegate.m in Sources */,
 				71CAB90520BB146A00DDF03C /* DoorWindowCalculationFormulaObjective.m in Sources */,

@@ -114,10 +114,9 @@
         self.borderUpTing = borderArr[1];
         self.borderRightTing = borderArr[2];
         self.borderDownTing = borderArr[3];
-        
-        //添加至全部挺中
-        [[[WZZShapeHandler shareInstance] allTings] addObjectsFromArray:borderArr];
     }
+    //添加至全部挺中
+    [[[WZZShapeHandler shareInstance] allTings] addObjectsFromArray:borderArr];
 }
 
 - (void)makeAnyBorderWithPoints:(NSArray *)points
@@ -215,6 +214,10 @@
 
 - (void)nodeClick:(SCNHitTestResult *)result {
     NSLog(@"window点击");
+    [self nodeClickPoint:CGPointMake(result.localCoordinates.x, result.localCoordinates.y)];
+}
+
+- (void)nodeClickPoint:(CGPoint)result {
     
 }
 

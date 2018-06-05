@@ -8,8 +8,14 @@
 
 #import <SceneKit/SceneKit.h>
 #import "WZZInsideNode.h"
+#import "WZZWindowDataMaker.h"
 
 @interface WZZWindowNode : SCNNode
+
+/**
+ 窗户数据
+ */
+@property (nonatomic, weak) WZZWindowDataMaker * windowMaker;
 
 /**
  内部点，如果没边框，内部点和外部点相等
@@ -100,6 +106,9 @@
 
 //点击
 - (void)nodeClick:(SCNHitTestResult *)result;
+
+//点击
+- (void)nodeClickPoint:(CGPoint)result;
 
 
 /**

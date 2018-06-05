@@ -219,8 +219,10 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="actionSeg" destination="DnY-4J-U2m" id="qTO-E1-Kaj"/>
                         <outlet property="arButton" destination="T6n-p1-QIB" id="GVA-tv-oIp"/>
                         <outlet property="heiTF" destination="lSA-bo-bSU" id="lhK-Zw-bba"/>
+                        <outlet property="hvSwitch" destination="fVU-c9-vBR" id="nGQ-gB-9Ax"/>
                         <outlet property="mainTableView" destination="ro0-hX-pHt" id="ss1-Qa-MSh"/>
                         <outlet property="upView" destination="K0t-rN-ccM" id="7gM-5s-bjb"/>
                         <outlet property="widTF" destination="yP2-EE-t4f" id="9sL-h6-Mmb"/>
