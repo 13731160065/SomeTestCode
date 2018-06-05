@@ -14,7 +14,6 @@
                    superNode:(SCNNode *)superNode
                       border:(CGFloat)border {
     WZZWindowBorderTingNode * node = [super nodeWithPath:pointArr superNode:superNode border:border];
-    NSLog(@"%@", [node class]);
     node.startPoint = pointArr[0].CGPointValue;
     node.endPoint = pointArr[1].CGPointValue;
     return node;

@@ -10,6 +10,7 @@
 		7105505E20BE9E4E0041078E /* WZZARVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7105505C20BE9E4E0041078E /* WZZARVC.m */; };
 		7105505F20BE9E4E0041078E /* WZZARVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7105505D20BE9E4E0041078E /* WZZARVC.xib */; };
 		710A675720B67305001046F5 /* WZZLinkedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 710A675620B67305001046F5 /* WZZLinkedArray.m */; };
+		710F58E420C63EFB00238620 /* WZZWindowDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 710F58E320C63EFB00238620 /* WZZWindowDataHandler.m */; };
 		7146B05820B55B6D0097A23D /* WZZWindowNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7146B05720B55B6D0097A23D /* WZZWindowNode.m */; };
 		7153838620B80EDC00A9DB3A /* WZZMakeQueueModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7153838520B80EDC00A9DB3A /* WZZMakeQueueModel.m */; };
 		71647BFF20B62DFB0077728E /* WZZInsideNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71647BFE20B62DFB0077728E /* WZZInsideNode.m */; };
@@ -72,6 +73,8 @@
 		7105505D20BE9E4E0041078E /* WZZARVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WZZARVC.xib; sourceTree = "<group>"; };
 		710A675520B67305001046F5 /* WZZLinkedArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZLinkedArray.h; sourceTree = "<group>"; };
 		710A675620B67305001046F5 /* WZZLinkedArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZLinkedArray.m; sourceTree = "<group>"; };
+		710F58E220C63EFB00238620 /* WZZWindowDataHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZWindowDataHandler.h; sourceTree = "<group>"; };
+		710F58E320C63EFB00238620 /* WZZWindowDataHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZWindowDataHandler.m; sourceTree = "<group>"; };
 		7146B05620B55B6D0097A23D /* WZZWindowNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZWindowNode.h; sourceTree = "<group>"; };
 		7146B05720B55B6D0097A23D /* WZZWindowNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZWindowNode.m; sourceTree = "<group>"; };
 		7153838420B80EDC00A9DB3A /* WZZMakeQueueModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZMakeQueueModel.h; sourceTree = "<group>"; };
@@ -233,6 +236,8 @@
 				71CAB90120BABFDD00DDF03C /* WZZZhongTingNode.m */,
 				717ED2B020B6AA280002AC35 /* WZZShapeHandler.h */,
 				717ED2B120B6AA280002AC35 /* WZZShapeHandler.m */,
+				710F58E220C63EFB00238620 /* WZZWindowDataHandler.h */,
+				710F58E320C63EFB00238620 /* WZZWindowDataHandler.m */,
 				71CAB90320BB146900DDF03C /* DoorWindowCalculationFormulaObjective.h */,
 				71CAB90420BB146A00DDF03C /* DoorWindowCalculationFormulaObjective.m */,
 				7153838420B80EDC00A9DB3A /* WZZMakeQueueModel.h */,
@@ -418,6 +423,7 @@
 				7191A84A20AC43F300F729A4 /* ViewController.m in Sources */,
 				7105505E20BE9E4E0041078E /* WZZARVC.m in Sources */,
 				7153838620B80EDC00A9DB3A /* WZZMakeQueueModel.m in Sources */,
+				710F58E420C63EFB00238620 /* WZZWindowDataHandler.m in Sources */,
 				719313FB20BBD62400663B8F /* WZZFillNode.m in Sources */,
 				7191A85520AC43F300F729A4 /* main.m in Sources */,
 				71647C0220B630710077728E /* WZZ2DButtonNode.m in Sources */,
@@ -601,6 +607,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = L3EKEXQ8PC;
 				INFOPLIST_FILE = tmp3d/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

@@ -11,6 +11,7 @@
 #import "WZZZhongTingNode.h"
 #import "WZZTextureFillNode.h"
 #import "WZZShanFillNode.h"
+#import "WZZWindowDataHandler.h"
 
 //中挺宽度
 #define WZZInsideNode_BorderWidth WZZShapeHandler_mm_cm(5)
@@ -120,7 +121,7 @@
                 //对window赋值，从下往上
                 [self setInsideWindow:@[window2, window1]];
                 
-                [[[WZZShapeHandler shareInstance] allTings] addObject:self.insideZhongTing];
+                [[[WZZWindowDataHandler shareInstance] allTings] addObject:self.insideZhongTing];
             }
         }
     } else {
@@ -187,7 +188,7 @@
         //对window赋值
         [self setInsideWindow:@[window1, window2]];
         
-        [[[WZZShapeHandler shareInstance] allTings] addObject:self.insideZhongTing];
+        [[[WZZWindowDataHandler shareInstance] allTings] addObject:self.insideZhongTing];
     }
 }
 
@@ -232,21 +233,24 @@
             self.insideCutHV = [WZZShapeHandler shareInstance].insideHV;
             //切割
             [self cutWithPosition:touchPoint];
+            [WZZWindowDataHandler markdownState];
         } if ([WZZShapeHandler shareInstance].insideAction == WZZInsideNode_Action_Fill) {
             //填充
             [self fillWithInside:[WZZShapeHandler shareInstance].insideContentType];
+            [WZZWindowDataHandler markdownState];
         } else {
             //none
         }
     } else if ([WZZShapeHandler shareInstance].insideContentType == WZZInsideNodeContentType_Turn) {
         //如果内容不是空的，但填充是转向框，可以做转向框操作
         [self fillWithInside:[WZZShapeHandler shareInstance].insideContentType];
+        [WZZWindowDataHandler markdownState];
     }
 }
 
 //重写删除方法，删除中挺
 - (void)removeFromParentNode {
-    [[[WZZShapeHandler shareInstance] allTings] removeObject:self.insideZhongTing];
+    [[[WZZWindowDataHandler shareInstance] allTings] removeObject:self.insideZhongTing];
     [super removeFromParentNode];
 }
 

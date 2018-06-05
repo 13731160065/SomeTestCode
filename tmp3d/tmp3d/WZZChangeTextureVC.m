@@ -8,6 +8,7 @@
 
 #import "WZZChangeTextureVC.h"
 #import "WZZShapeHandler.h"
+#import "WZZWindowDataHandler.h"
 
 @interface WZZChangeTextureVC ()
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segView;
@@ -26,17 +27,17 @@
     switch (sender.selectedSegmentIndex) {
         case 0:
         {
-            [WZZShapeHandler shareInstance].borderTexture = @"lvhejin.jpg";
+            [WZZWindowDataHandler shareInstance].borderTexture = @"lvhejin.jpg";
         }
             break;
         case 1:
         {
-            [WZZShapeHandler shareInstance].borderTexture = @"mucai005.jpg";
+            [WZZWindowDataHandler shareInstance].borderTexture = @"mucai005.jpg";
         }
             break;
         case 2:
         {
-            [WZZShapeHandler shareInstance].borderTexture = @"metal.jpg";
+            [WZZWindowDataHandler shareInstance].borderTexture = @"metal.jpg";
         }
             break;
             

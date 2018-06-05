@@ -10,6 +10,7 @@
 #import "WZZShapeHandler.h"
 #import "WZZWindowNode.h"
 #import "DoorWindowCalculationFormulaObjective.h"
+#import "WZZWindowDataHandler.h"
 
 #define WZZTextureFillNode_TextureContent_Glass @"boli.jpg"
 #define WZZTextureFillNode_TextureContent_Sha [UIColor blackColor]
@@ -56,7 +57,7 @@
     SCNVector3 rightTV3 = SCNVector3Make(windowNode.borderRightTing.startPoint.x, windowNode.borderRightTing.startPoint.y, 0);
     SCNVector3 leftTV3 = SCNVector3Make(windowNode.borderLeftTing.startPoint.x, windowNode.borderLeftTing.startPoint.y, 0);
     
-    WZZWindowNode * rootWindow = [WZZShapeHandler shareInstance].allWindows.firstObject;
+    WZZWindowNode * rootWindow = [WZZWindowDataHandler shareInstance].allWindows.firstObject;
     
     upTV3 = [windowNode.borderUpTing convertPosition:upTV3 toNode:rootWindow];
     downTV3 = [windowNode.borderDownTing convertPosition:downTV3 toNode:rootWindow];

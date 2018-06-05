@@ -11,6 +11,7 @@
 #import "WZZLinkedArray.h"
 #import "WZZShapeHandler.h"
 #import "WZZWindowBorderTingNode.h"
+#import "WZZWindowDataHandler.h"
 
 #define WZZWindowNode_BorderWidth WZZShapeHandler_mm_cm(7)
 
@@ -22,7 +23,7 @@
     WZZWindowNode * node = [WZZWindowNode node];
     [node setupNodeWithPoints:points windowBorderType:windowBorderType borderWidth:WZZWindowNode_BorderWidth];
     [node setupInside];
-    [[[WZZShapeHandler shareInstance] allWindows] addObject:node];
+    [[[WZZWindowDataHandler shareInstance] allWindows] addObject:node];
     node.geometry.firstMaterial.transparency = 0.0f;
     return node;
 }
@@ -116,7 +117,7 @@
         self.borderDownTing = borderArr[3];
     }
     //添加至全部挺中
-    [[[WZZShapeHandler shareInstance] allTings] addObjectsFromArray:borderArr];
+    [[[WZZWindowDataHandler shareInstance] allTings] addObjectsFromArray:borderArr];
 }
 
 - (void)makeAnyBorderWithPoints:(NSArray *)points

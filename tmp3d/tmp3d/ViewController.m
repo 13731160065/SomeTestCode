@@ -17,6 +17,7 @@
 #import "WZZCalParamVC.h"
 #import "WZZChangeTextureVC.h"
 #import "WZZChangeFillVC.h"
+#import "WZZWindowDataHandler.h"
 
 @import UIKit;
 @import SceneKit;
@@ -92,20 +93,54 @@ typedef struct {
                                                                        @"name":@"清空",
                                                                        @"action":^() {
         [self resetNode];
-        [self resetUI];
     }}]];
     
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
                                                                        @"name":@"重建",
                                                                        @"action":^() {
         NSDictionary * makerDic = [[NSUserDefaults standardUserDefaults] objectForKey:@"makerDic"];
-        WZZWindowNode * windowNode = [WZZShapeHandler makeAllWindowWithDic:makerDic];
-        NSArray * arr = makerDic[@"outPoints"];
+        WZZWindowNode * windowNode = [WZZWindowDataHandler makeAllWindowWithDic:makerDic];
+        NSArray * arr = windowNode.outPoints;
         if (arr.count == 4) {
-            CGFloat offsetX = [[arr[2] componentsSeparatedByString:@","][1] doubleValue]/2.0f;
-            CGFloat offsetY = [[arr[1] componentsSeparatedByString:@","][1] doubleValue]/2.0f;
+            CGFloat offsetX = [arr[2] CGPointValue].x/2.0f;
+            CGFloat offsetY = [arr[1] CGPointValue].y/2.0f;
             [windowNode setPosition:SCNVector3Make(windowNode.position.x-offsetX, windowNode.position.y-offsetY, windowNode.position.z)];
         }
+        [self resetNode];
+        [mainScene.rootNode addChildNode:windowNode];
+    }}]];
+    
+    [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                                                                       @"name":@"撤销",
+                                                                       @"action":^() {
+        WZZWindowNode * windowNode = [WZZWindowDataHandler undo];
+        if (!windowNode) {
+            return ;
+        }
+        NSArray * arr = windowNode.outPoints;
+        if (arr.count == 4) {
+            CGFloat offsetX = [arr[2] CGPointValue].x/2.0f;
+            CGFloat offsetY = [arr[1] CGPointValue].y/2.0f;
+            [windowNode setPosition:SCNVector3Make(windowNode.position.x-offsetX, windowNode.position.y-offsetY, windowNode.position.z)];
+        }
+        [self resetNode];
+        [mainScene.rootNode addChildNode:windowNode];
+    }}]];
+    
+    [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                                                                       @"name":@"重做",
+                                                                       @"action":^() {
+        WZZWindowNode * windowNode = [WZZWindowDataHandler redo];
+        if (!windowNode) {
+            return ;
+        }
+        NSArray * arr = windowNode.outPoints;
+        if (arr.count == 4) {
+            CGFloat offsetX = [arr[2] CGPointValue].x/2.0f;
+            CGFloat offsetY = [arr[1] CGPointValue].y/2.0f;
+            [windowNode setPosition:SCNVector3Make(windowNode.position.x-offsetX, windowNode.position.y-offsetY, windowNode.position.z)];
+        }
+        [self resetNode];
         [mainScene.rootNode addChildNode:windowNode];
     }}]];
     
@@ -140,18 +175,10 @@ typedef struct {
     [mainScene.rootNode enumerateChildNodesUsingBlock:^(SCNNode * _Nonnull child, BOOL * _Nonnull stop) {
         [child removeFromParentNode];
     }];
-    //重置handler
-    [WZZShapeHandler resetHandler];
-}
-
-- (void)resetUI {
-    _hvSwitch.on = NO;
-    _actionSeg.selectedSegmentIndex = 0;
 }
 
 - (void)setupWindowNode {
     [self resetNode];
-    [self resetUI];
     
     CGFloat wid = _widTF.text.doubleValue;
     CGFloat hei = _heiTF.text.doubleValue;
@@ -230,7 +257,7 @@ typedef struct {
     //检测点击个数
     if([hitResults count] > 0){
         __block NSInteger level = -1;
-        __block id node = nil;
+        __block WZZInsideNode * node = nil;
         __block SCNHitTestResult * res;
         //返回第一个点击对象
         [hitResults enumerateObjectsUsingBlock:^(SCNHitTestResult * _Nonnull result, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -246,7 +273,7 @@ typedef struct {
         }];
         if ([node isKindOfClass:[WZZInsideNode class]]) {
             [node nodeClick:res];
-            NSLog(@">>%ld", [node nodeLevel]);
+            NSLog(@">>%zd", [node nodeLevel]);
         }
     }
 }

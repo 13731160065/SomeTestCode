@@ -20,7 +20,7 @@
 
 //转换点，返回CGPoint
 #define WZZShapeHandler_LinkedObjectToPoint(linkObj) [linkObj.thisObj CGPointValue]
-#define WZZShapeHandlerTexture_Border [WZZShapeHandler shareInstance].borderTexture
+#define WZZShapeHandlerTexture_Border [WZZWindowDataHandler shareInstance].borderTexture
 #define WZZShapeHandlerTexture_Fill @"boli.jpg"
 #define WZZShapeHandler_mm_cm(cm) ((double)(cm)*10.0f)
 #define WZZShapeHandler_mm_dm(dm) ((double)(dm)*100.0f)
@@ -59,9 +59,14 @@ typedef enum : NSUInteger {
 @interface WZZShapeHandler : NSObject
 
 /**
- 根节点
+ 记录所有操作路径
  */
-@property (nonatomic, strong) SCNNode * rootNode;
+@property (nonatomic, strong) NSMutableArray * actionQueueArray;
+
+/**
+ 当前操作的指针
+ */
+@property (nonatomic, assign) NSInteger currentActionIndex;
 
 /**
  内容切割方向
@@ -77,33 +82,6 @@ typedef enum : NSUInteger {
  内容填充类型
  */
 @property (nonatomic, assign) WZZInsideNodeContentType insideContentType;
-
-/**
- 边框材质
- */
-@property (nonatomic, strong) NSString * borderTexture;
-
-/**
- 操作队列数组
- */
-@property (nonatomic, strong) NSMutableArray <WZZMakeQueueModel *>* actionQueueArray;
-
-/**
- 所有框
- 包括层叠的大小框，需要进行筛选
- 如果要重制请注意清空该数组
- */
-@property (nonatomic, strong) NSMutableArray <WZZWindowNode *>* allWindows;
-
-/**
- 所有在最上层的window
- */
-@property (nonatomic, strong, readonly) NSArray <WZZWindowNode *>* allUpWindows;
-
-/**
- 所有挺
- */
-@property (nonatomic, strong) NSMutableArray <WZZTingNode *>* allTings;
 
 /**
  单例
@@ -128,20 +106,6 @@ typedef enum : NSUInteger {
                                              border:(CGFloat)border;
 
 /**
- 获取所有重建数据
-
- @return 重建数据字典
- */
-+ (NSDictionary *)getAllMakerData;
-
-/**
- 重建所有窗体
-
- @param dic 数据字典
- */
-+ (WZZWindowNode *)makeAllWindowWithDic:(NSDictionary *)dic;
-
-/**
  测试时快速显示点
 
  @param node 父node
@@ -151,11 +115,6 @@ typedef enum : NSUInteger {
 + (void)showPointWithNode:(SCNNode *)node
                    points:(NSArray <NSValue *>*)points
                     color:(UIColor *)color;
-
-/**
- 获取矩形所有边框数据
- */
-- (void)getRectAllBorderData:(void(^)(id borderData))borderDataBlock;
 
 #pragma mark - 弃用
 
