@@ -18,6 +18,8 @@
 #import "WZZChangeTextureVC.h"
 #import "WZZChangeFillVC.h"
 #import "WZZWindowDataHandler.h"
+#import "WZZChangeZhongTingVC.h"
+#import "WZZWindowBorderTingNode.h"
 
 @import UIKit;
 @import SceneKit;
@@ -93,6 +95,7 @@ typedef struct {
                                                                        @"name":@"清空",
                                                                        @"action":^() {
         [self resetNode];
+        [WZZWindowDataHandler resetHandler];
     }}]];
     
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
@@ -108,6 +111,9 @@ typedef struct {
         }
         [self resetNode];
         [mainScene.rootNode addChildNode:windowNode];
+        
+        //重建完记录一下
+        [WZZWindowDataHandler markdownState];
     }}]];
     
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
@@ -166,6 +172,89 @@ typedef struct {
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [mainSCNV addGestureRecognizer:tap];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(zhongTingClick) name:@"WZZZhongTingNodeClick" object:nil];
+}
+
+- (void)zhongTingClick {
+    WZZWindowNode * rootWindow = [WZZWindowDataHandler shareInstance].allWindows.firstObject;
+    
+    WZZChangeZhongTingVC * vc = [[WZZChangeZhongTingVC alloc] init];
+    __weak WZZChangeZhongTingVC * weakVC = vc;
+    __weak WZZInsideNode * weakInside = (WZZInsideNode *)[WZZWindowDataHandler shareInstance].currentTing.superNode;
+    
+    WZZZhongTingNode * zhongTing = [WZZWindowDataHandler shareInstance].currentTing;
+    vc.hv = zhongTing.tingHV;
+    
+    //计算开始结束点
+    CGPoint startPoint = CGPointZero;
+    CGPoint endPoint = CGPointZero;
+    SCNNode * startSuperNode;
+    SCNNode * endSuperNode;
+    if (vc.hv == WZZInsideNode_H) {
+        startPoint = weakInside.superWindow.borderUpTing.startPoint;
+        endPoint = weakInside.superWindow.borderDownTing.startPoint;
+        startSuperNode = weakInside.superWindow.borderUpTing.superNode;
+        endSuperNode = weakInside.superWindow.borderUpTing.superNode;
+    } else {
+        startPoint = weakInside.superWindow.borderLeftTing.startPoint;
+        endPoint = weakInside.superWindow.borderRightTing.startPoint;
+        startSuperNode = weakInside.superWindow.borderLeftTing.superNode;
+        endSuperNode = weakInside.superWindow.borderRightTing.superNode;
+    }
+    
+    //计算最小最大值
+    SCNVector3 v31 = SCNVector3Make(startPoint.x, startPoint.y, 0);
+    SCNVector3 v31_ = [startSuperNode convertPosition:v31 toNode:rootWindow];
+    SCNVector3 v32 = SCNVector3Make(endPoint.x, endPoint.y, 0);
+    SCNVector3 v32_ = [endSuperNode convertPosition:v32 toNode:rootWindow];
+    if (vc.hv == WZZInsideNode_H) {
+        vc.min = v31_.y;
+        vc.max = v32_.y;
+    } else {
+        vc.min = v31_.x;
+        vc.max = v32_.x;
+    }
+    if (vc.min > vc.max) {
+        CGFloat tmp = vc.min;
+        vc.min = vc.max;
+        vc.max = tmp;
+    }
+    
+    //确定回调
+    vc.okBlock = ^(CGFloat position) {
+        NSDictionary * dic = [WZZWindowDataHandler getAllMakerData];
+        NSMutableDictionary * mdic = [WZZWindowDataHandler getInsideDicWithAllWindowDic:dic insideLevel:weakInside.nodeLevel];
+        if (mdic) {
+            CGPoint cutPoint = CGPointMake([[mdic[@"cutPosition"] componentsSeparatedByString:@","][0] doubleValue], [[mdic[@"cutPosition"] componentsSeparatedByString:@","][1] doubleValue]);
+            SCNVector3 v3 = [weakInside convertPosition:SCNVector3Make(cutPoint.x, cutPoint.y, 0) toNode:rootWindow];
+            if (weakVC.hv == WZZInsideNode_H) {
+                v3.y = position;
+                SCNVector3 v3_ = [rootWindow convertPosition:v3 toNode:weakInside];
+                mdic[@"cutPosition"] = [NSString stringWithFormat:@"%lf,%lf", cutPoint.x, v3_.y];
+            } else {
+                v3.x = position;
+                SCNVector3 v3_ = [rootWindow convertPosition:v3 toNode:weakInside];
+                mdic[@"cutPosition"] = [NSString stringWithFormat:@"%lf,%lf", v3_.x, cutPoint.y];
+            }
+            
+            //重建window
+            WZZWindowNode * windowNode = [WZZWindowDataHandler makeAllWindowWithDic:dic];
+            NSArray * arr = windowNode.outPoints;
+            if (arr.count == 4) {
+                CGFloat offsetX = [arr[2] CGPointValue].x/2.0f;
+                CGFloat offsetY = [arr[1] CGPointValue].y/2.0f;
+                [windowNode setPosition:SCNVector3Make(windowNode.position.x-offsetX, windowNode.position.y-offsetY, windowNode.position.z)];
+            }
+            
+            [self resetNode];
+            [mainScene.rootNode addChildNode:windowNode];
+            
+            //重建完记录一下
+            [WZZWindowDataHandler markdownState];
+        }
+    };
+    [self presentViewController:vc animated:YES completion:nil];
 }
 
 - (void)resetNode {
@@ -193,7 +282,6 @@ typedef struct {
     
     //矩形
     WZZWindowNode * node233 = [WZZWindowNode nodeWithHeight:hei width:wid windowBorderType:WZZShapeHandler_WindowBorderType_RootWindowBorder];
-    [mainScene.rootNode addChildNode:node233];
 #else
     //多边形
     NSMutableArray * arr = [NSMutableArray array];
@@ -257,11 +345,15 @@ typedef struct {
     //检测点击个数
     if([hitResults count] > 0){
         __block NSInteger level = -1;
-        __block WZZInsideNode * node = nil;
+        __block id node = nil;
         __block SCNHitTestResult * res;
         //返回第一个点击对象
         [hitResults enumerateObjectsUsingBlock:^(SCNHitTestResult * _Nonnull result, NSUInteger idx, BOOL * _Nonnull stop) {
             NSLog(@"%@", NSStringFromClass([result.node class]));
+            if ([result.node isKindOfClass:[WZZZhongTingNode class]]) {
+                node = result.node;
+                return ;
+            }
             if ([result.node isKindOfClass:[WZZInsideNode class]]) {
                 WZZInsideNode * clickNode = (WZZInsideNode *)result.node;
                 if (clickNode.nodeLevel > level) {
@@ -275,18 +367,24 @@ typedef struct {
             [node nodeClick:res];
             NSLog(@">>%zd", [node nodeLevel]);
         }
+        if ([node isKindOfClass:[WZZZhongTingNode class]]) {
+            //中挺点击
+            [WZZWindowDataHandler shareInstance].currentTing = node;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"WZZZhongTingNodeClick" object:nil];
+        }
     }
 }
 
 //创建
 - (IBAction)changeC:(id)sender {
     [self.view endEditing:YES];
-    
+    [WZZWindowDataHandler resetHandler];
     [self setupWindowNode];
+    //创建完记录下
+    [WZZWindowDataHandler markdownState];
 }
 
-- (UIImage *)snapshot:(UIView *)view
-{
+- (UIImage *)snapshot:(UIView *)view {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0);
     [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -320,12 +418,6 @@ typedef struct {
         default:
             break;
     }
-}
-
-- (IBAction)arKitClick:(id)sender {
-    WZZARManager * ar = [WZZARManager shareInstance];
-    [ar setupAR];
-    [ar startAR];
 }
 
 #pragma mark - tableview代理

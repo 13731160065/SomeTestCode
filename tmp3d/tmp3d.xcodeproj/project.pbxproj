@@ -12,6 +12,8 @@
 		710A675720B67305001046F5 /* WZZLinkedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 710A675620B67305001046F5 /* WZZLinkedArray.m */; };
 		710F58E420C63EFB00238620 /* WZZWindowDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 710F58E320C63EFB00238620 /* WZZWindowDataHandler.m */; };
 		7146B05820B55B6D0097A23D /* WZZWindowNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7146B05720B55B6D0097A23D /* WZZWindowNode.m */; };
+		7148131020C783570020BA95 /* WZZChangeZhongTingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7148130E20C783570020BA95 /* WZZChangeZhongTingVC.m */; };
+		7148131120C783570020BA95 /* WZZChangeZhongTingVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7148130F20C783570020BA95 /* WZZChangeZhongTingVC.xib */; };
 		7153838620B80EDC00A9DB3A /* WZZMakeQueueModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7153838520B80EDC00A9DB3A /* WZZMakeQueueModel.m */; };
 		71647BFF20B62DFB0077728E /* WZZInsideNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71647BFE20B62DFB0077728E /* WZZInsideNode.m */; };
 		71647C0220B630710077728E /* WZZ2DButtonNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71647C0120B630710077728E /* WZZ2DButtonNode.m */; };
@@ -77,6 +79,9 @@
 		710F58E320C63EFB00238620 /* WZZWindowDataHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZWindowDataHandler.m; sourceTree = "<group>"; };
 		7146B05620B55B6D0097A23D /* WZZWindowNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZWindowNode.h; sourceTree = "<group>"; };
 		7146B05720B55B6D0097A23D /* WZZWindowNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZWindowNode.m; sourceTree = "<group>"; };
+		7148130D20C783570020BA95 /* WZZChangeZhongTingVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZChangeZhongTingVC.h; sourceTree = "<group>"; };
+		7148130E20C783570020BA95 /* WZZChangeZhongTingVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZChangeZhongTingVC.m; sourceTree = "<group>"; };
+		7148130F20C783570020BA95 /* WZZChangeZhongTingVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WZZChangeZhongTingVC.xib; sourceTree = "<group>"; };
 		7153838420B80EDC00A9DB3A /* WZZMakeQueueModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZMakeQueueModel.h; sourceTree = "<group>"; };
 		7153838520B80EDC00A9DB3A /* WZZMakeQueueModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZMakeQueueModel.m; sourceTree = "<group>"; };
 		71647BFD20B62DFB0077728E /* WZZInsideNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZInsideNode.h; sourceTree = "<group>"; };
@@ -214,6 +219,9 @@
 				7105505B20BE9E4E0041078E /* WZZARVC.h */,
 				7105505C20BE9E4E0041078E /* WZZARVC.m */,
 				7105505D20BE9E4E0041078E /* WZZARVC.xib */,
+				7148130D20C783570020BA95 /* WZZChangeZhongTingVC.h */,
+				7148130E20C783570020BA95 /* WZZChangeZhongTingVC.m */,
+				7148130F20C783570020BA95 /* WZZChangeZhongTingVC.xib */,
 				7146B05620B55B6D0097A23D /* WZZWindowNode.h */,
 				7146B05720B55B6D0097A23D /* WZZWindowNode.m */,
 				718E5D9C20C4D30A00CABFAE /* WZZWindowDataMaker.h */,
@@ -382,6 +390,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				71DDFE1120B7DE5D00695935 /* lvhejin.jpg in Resources */,
+				7148131120C783570020BA95 /* WZZChangeZhongTingVC.xib in Resources */,
 				7191A85220AC43F300F729A4 /* LaunchScreen.storyboard in Resources */,
 				7193140620BC102900663B8F /* WZZChangeTextureVC.xib in Resources */,
 				7193140B20BC1F0200663B8F /* WZZChangeFillVC.xib in Resources */,
@@ -434,6 +443,7 @@
 				71CAB90220BABFDD00DDF03C /* WZZZhongTingNode.m in Sources */,
 				7193140120BBDDF500663B8F /* WZZShanFillNode.m in Sources */,
 				71DDFE1720B7F06E00695935 /* WZZTingNode.m in Sources */,
+				7148131020C783570020BA95 /* WZZChangeZhongTingVC.m in Sources */,
 				71C6DF7420B2B591005085F9 /* WZZARManager.m in Sources */,
 				718E5D9E20C4D30A00CABFAE /* WZZWindowDataMaker.m in Sources */,
 				717ED2B220B6AA280002AC35 /* WZZShapeHandler.m in Sources */,
@@ -612,7 +622,7 @@
 				INFOPLIST_FILE = tmp3d/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.www.fff;
+				PRODUCT_BUNDLE_IDENTIFIER = com.www.fff22;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -627,7 +637,7 @@
 				INFOPLIST_FILE = tmp3d/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.www.fff;
+				PRODUCT_BUNDLE_IDENTIFIER = com.www.fff22;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

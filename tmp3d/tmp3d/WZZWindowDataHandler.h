@@ -30,6 +30,11 @@
 @property (nonatomic, strong) NSMutableArray <WZZTingNode *>* allTings;
 
 /**
+ 当前选中挺
+ */
+@property (nonatomic, strong) WZZZhongTingNode * currentTing;
+
+/**
  边框材质
  */
 @property (nonatomic, strong) NSString * borderTexture;
@@ -86,5 +91,15 @@
  @param dic 数据字典
  */
 + (WZZWindowNode *)makeAllWindowWithDic:(NSDictionary *)dic;
+
+/**
+ 获取insdieDic以修改
+
+ @param dic 所有数据的字典
+ @param insideLevel inside等级
+ @return 找到的dic
+ */
++ (NSMutableDictionary *)getInsideDicWithAllWindowDic:(NSDictionary *)dic
+                                          insideLevel:(NSInteger)insideLevel;
 
 @end

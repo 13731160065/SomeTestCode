@@ -125,6 +125,7 @@
     insideDic[@"insideAction"] = @(insideNode.insideAction);
     insideDic[@"insideType"] = @(insideNode.insideType);
     insideDic[@"insideCutHV"] = @(insideNode.insideCutHV);
+    insideDic[@"insideLevel"] = @(insideNode.nodeLevel);
     
     if (insideNode.insideAction == WZZInsideNode_Action_Cut) {
         //inside上的window

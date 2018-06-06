@@ -44,10 +44,12 @@ static WZZWindowDataHandler * wzzWindowDataHandler;
 //记录
 + (void)markdownState {
     NSDictionary * dic = [WZZWindowDataHandler getAllMakerData];
-    NSInteger index = [WZZShapeHandler shareInstance].currentActionIndex++;
+    NSInteger index = ++[WZZShapeHandler shareInstance].currentActionIndex;
     NSInteger count = [WZZShapeHandler shareInstance].actionQueueArray.count;
-    if (index < count-1) {
-        [[WZZShapeHandler shareInstance].actionQueueArray removeObjectsInRange:NSMakeRange(index+1, count-index-1)];
+    if (count == 0) {
+        [WZZShapeHandler shareInstance].currentActionIndex = 0;
+    } else if (index < count) {
+        [[WZZShapeHandler shareInstance].actionQueueArray removeObjectsInRange:NSMakeRange(index, count-index)];
     }
     [[WZZShapeHandler shareInstance].actionQueueArray addObject:dic];
 }
@@ -287,6 +289,27 @@ static WZZWindowDataHandler * wzzWindowDataHandler;
     [WZZWindowDataHandler resetHandler];
     WZZWindowNode * node = [WZZWindowDataMaker makeWindowWithDic:dic];
     return node;
+}
+
+//MARK:获取到windowdic里的insidedic
++ (NSMutableDictionary *)getInsideDicWithAllWindowDic:(NSMutableDictionary *)dic
+                                          insideLevel:(NSInteger)insideLevel {
+    NSDictionary * insideDic = dic[@"inside"];
+    if ([insideDic[@"insideLevel"] integerValue] == insideLevel) {
+        dic[@"inside"] = [NSMutableDictionary dictionaryWithDictionary:insideDic];
+        return dic[@"inside"];
+    } else {
+        NSArray * insideWindow = insideDic[@"insideWindow"];
+        if (!insideWindow) {
+            return nil;
+        }
+        NSMutableDictionary * subDic = [self getInsideDicWithAllWindowDic:insideWindow[0] insideLevel:insideLevel];
+        if (subDic) {
+            return subDic;
+        } else {
+            return [self getInsideDicWithAllWindowDic:insideWindow[1] insideLevel:insideLevel];
+        }
+    }
 }
 
 #pragma mark - 属性

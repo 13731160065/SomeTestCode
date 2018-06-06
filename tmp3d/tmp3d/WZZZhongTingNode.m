@@ -30,7 +30,7 @@
             minX = pointArr[i].CGPointValue.x;
         }
         if (pointArr[i].CGPointValue.y > maxY) {
-            maxY = pointArr[i].CGPointValue.x;
+            maxY = pointArr[i].CGPointValue.y;
         }
         if (pointArr[i].CGPointValue.y < minY) {
             minY = pointArr[i].CGPointValue.y;
