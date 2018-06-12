@@ -11,6 +11,7 @@
 		7105505F20BE9E4E0041078E /* WZZARVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7105505D20BE9E4E0041078E /* WZZARVC.xib */; };
 		710A675720B67305001046F5 /* WZZLinkedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 710A675620B67305001046F5 /* WZZLinkedArray.m */; };
 		710F58E420C63EFB00238620 /* WZZWindowDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 710F58E320C63EFB00238620 /* WZZWindowDataHandler.m */; };
+		7131C2FD20CF6D32007BBB37 /* WZZHttpTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 7131C2FB20CF6D32007BBB37 /* WZZHttpTool.m */; };
 		7146B05820B55B6D0097A23D /* WZZWindowNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7146B05720B55B6D0097A23D /* WZZWindowNode.m */; };
 		7148131020C783570020BA95 /* WZZChangeZhongTingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7148130E20C783570020BA95 /* WZZChangeZhongTingVC.m */; };
 		7148131120C783570020BA95 /* WZZChangeZhongTingVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7148130F20C783570020BA95 /* WZZChangeZhongTingVC.xib */; };
@@ -77,6 +78,8 @@
 		710A675620B67305001046F5 /* WZZLinkedArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZLinkedArray.m; sourceTree = "<group>"; };
 		710F58E220C63EFB00238620 /* WZZWindowDataHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZWindowDataHandler.h; sourceTree = "<group>"; };
 		710F58E320C63EFB00238620 /* WZZWindowDataHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZWindowDataHandler.m; sourceTree = "<group>"; };
+		7131C2FB20CF6D32007BBB37 /* WZZHttpTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WZZHttpTool.m; sourceTree = "<group>"; };
+		7131C2FC20CF6D32007BBB37 /* WZZHttpTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WZZHttpTool.h; sourceTree = "<group>"; };
 		7146B05620B55B6D0097A23D /* WZZWindowNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZWindowNode.h; sourceTree = "<group>"; };
 		7146B05720B55B6D0097A23D /* WZZWindowNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WZZWindowNode.m; sourceTree = "<group>"; };
 		7148130D20C783570020BA95 /* WZZChangeZhongTingVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WZZChangeZhongTingVC.h; sourceTree = "<group>"; };
@@ -256,6 +259,8 @@
 				710A675620B67305001046F5 /* WZZLinkedArray.m */,
 				71C6DF7320B2B591005085F9 /* WZZARManager.h */,
 				71C6DF7220B2B591005085F9 /* WZZARManager.m */,
+				7131C2FC20CF6D32007BBB37 /* WZZHttpTool.h */,
+				7131C2FB20CF6D32007BBB37 /* WZZHttpTool.m */,
 				7191A84B20AC43F300F729A4 /* Main.storyboard */,
 				7191A84E20AC43F300F729A4 /* Assets.xcassets */,
 				7191A85020AC43F300F729A4 /* LaunchScreen.storyboard */,
@@ -454,6 +459,7 @@
 				7193140520BC102900663B8F /* WZZChangeTextureVC.m in Sources */,
 				719313F720BBBB1300663B8F /* WZZCalParamVC.m in Sources */,
 				7193140A20BC1F0200663B8F /* WZZChangeFillVC.m in Sources */,
+				7131C2FD20CF6D32007BBB37 /* WZZHttpTool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

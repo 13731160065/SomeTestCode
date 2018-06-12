@@ -9,6 +9,7 @@
 #import "WZZCalParamVC.h"
 #import "WZZShapeHandler.h"
 #import "WZZWindowDataHandler.h"
+#import "WZZHttpTool.h"
 
 @interface WZZCalParamVC ()
 
@@ -28,7 +29,30 @@
     
     [[WZZWindowDataHandler shareInstance] getRectAllBorderData:^(id borderData) {
         _mainTextView.text = [NSString stringWithFormat:@"\n压线尺寸:\n%@\n玻璃尺寸:\n%@\n中挺尺寸:\n%@\n扇尺寸:%@", borderData[@"yaxian"], borderData[@"boli"], borderData[@"zhongting"], borderData[@"shan"]];
-        _mainTextView.text = [NSString stringWithFormat:@"%@\n\njson数据:%@", _mainTextView.text, [self jsonFromObject:borderData]];
+//        _mainTextView.text = [NSString stringWithFormat:@"%@\n\njson数据:%@", _mainTextView.text, [self jsonFromObject:borderData]];
+        
+        NSMutableArray * yaXianArr = [NSMutableArray arrayWithArray:borderData[@"yaxian"]];
+//        NSMutableArray * boliArr = [NSMutableArray arrayWithArray:borderData[@"boli"]];
+        NSMutableArray * zhongTingArr = [NSMutableArray arrayWithArray:borderData[@"zhongting"]];
+        NSMutableArray * kuangArr = [NSMutableArray arrayWithArray:borderData[@"kuang"]];
+        NSMutableArray * shanArr = [NSMutableArray array];
+        [borderData[@"shan"] enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [yaXianArr addObject:obj[@"shan_yaxian"]];
+            [shanArr addObject:obj[@"shan"]];
+        }];
+        
+        NSMutableDictionary * reqDic = [NSMutableDictionary dictionary];
+        reqDic[@"yaxian"] = [WZZHttpTool objectToJson:yaXianArr];
+        reqDic[@"ting"] = [WZZHttpTool objectToJson:zhongTingArr];
+        reqDic[@"kuang"] = [WZZHttpTool objectToJson:kuangArr];
+        reqDic[@"shan"] = [WZZHttpTool objectToJson:shanArr];
+        _mainTextView.text = [NSString stringWithFormat:@"%@\n\njson数据:%@", _mainTextView.text, reqDic];
+        
+//        [WZZHttpTool GET:@"" urlParamDic:reqDic successBlock:^(id httpResponse) {
+//
+//        } failedBlock:^(NSError *httpError) {
+//
+//        }];
     }];
     
     NSDictionary * makerDic = [WZZWindowDataHandler getAllMakerData];

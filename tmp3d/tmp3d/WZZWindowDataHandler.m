@@ -234,6 +234,22 @@ static WZZWindowDataHandler * wzzWindowDataHandler;
         }
     }
     
+    //框
+    CGPoint rp1 = rootWindow.outPoints[0].CGPointValue;
+    CGPoint rp2 = rootWindow.outPoints[1].CGPointValue;
+    CGPoint rp3 = rootWindow.outPoints[2].CGPointValue;
+    
+    CGFloat rH = rp2.y-rp1.y;
+    rH = (rH < 0)?-rH:rH;
+    
+    CGFloat rW = rp3.x-rp2.x;
+    rW = (rW < 0)?-rW:rW;
+    
+    allDataDic[@"kuang"] = [NSMutableArray array];
+    [allDataDic[@"kuang"] addObject:[NSString stringWithFormat:@"%.2lf", rH]];
+    [allDataDic[@"kuang"] addObject:[NSString stringWithFormat:@"%.2lf", rW]];
+    
+    //返回
     if (borderDataBlock) {
         borderDataBlock(allDataDic);
     }
