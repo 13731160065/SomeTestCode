@@ -147,6 +147,8 @@ typedef struct WZZShanFillNode_BaseData {
             CGFloat hh = [DoorWindowCalculationFormulaObjective DoorWindowFanCalculationFormula:baseData.h screenWindowTurn:turn distance:baseData.hf];
             CGFloat vv = [DoorWindowCalculationFormulaObjective DoorWindowFanCalculationFormula:baseData.v screenWindowTurn:turn distance:baseData.vf];
             [dataArr addObject:[NSString stringWithFormat:@"%.2lf", hh]];
+            [dataArr addObject:[NSString stringWithFormat:@"%.2lf", hh]];
+            [dataArr addObject:[NSString stringWithFormat:@"%.2lf", vv]];
             [dataArr addObject:[NSString stringWithFormat:@"%.2lf", vv]];
             shanData.h = baseData.h;
             shanData.v = baseData.v;

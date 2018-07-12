@@ -37,22 +37,23 @@
         NSMutableArray * kuangArr = [NSMutableArray arrayWithArray:borderData[@"kuang"]];
         NSMutableArray * shanArr = [NSMutableArray array];
         [borderData[@"shan"] enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [yaXianArr addObject:obj[@"shan_yaxian"]];
-            [shanArr addObject:obj[@"shan"]];
+            [yaXianArr addObjectsFromArray:obj[@"shan_yaxian"]];
+            [shanArr addObjectsFromArray:obj[@"shan"]];
         }];
         
         NSMutableDictionary * reqDic = [NSMutableDictionary dictionary];
-        reqDic[@"yaxian"] = [WZZHttpTool objectToJson:yaXianArr];
-        reqDic[@"ting"] = [WZZHttpTool objectToJson:zhongTingArr];
-        reqDic[@"kuang"] = [WZZHttpTool objectToJson:kuangArr];
-        reqDic[@"shan"] = [WZZHttpTool objectToJson:shanArr];
-        _mainTextView.text = [NSString stringWithFormat:@"%@\n\njson数据:%@", _mainTextView.text, reqDic];
+        reqDic[@"yaxian"] = yaXianArr;
+        reqDic[@"ting"] = zhongTingArr;
+        reqDic[@"kuang"] = kuangArr;
+        reqDic[@"shan"] = shanArr;
         
-//        [WZZHttpTool GET:@"" urlParamDic:reqDic successBlock:^(id httpResponse) {
-//
-//        } failedBlock:^(NSError *httpError) {
-//
-//        }];
+        NSString * data = [WZZHttpTool objectToJson:reqDic];
+        
+        [WZZHttpTool GET:@"http://192.168.0.27:8080/ReportForm/export.do" urlParamDic:@{@"data":data} successBlock:^(id httpResponse) {
+
+        } failedBlock:^(NSError *httpError) {
+
+        }];
     }];
     
     NSDictionary * makerDic = [WZZWindowDataHandler getAllMakerData];

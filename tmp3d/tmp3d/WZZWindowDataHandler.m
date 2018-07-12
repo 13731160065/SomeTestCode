@@ -247,6 +247,8 @@ static WZZWindowDataHandler * wzzWindowDataHandler;
     
     allDataDic[@"kuang"] = [NSMutableArray array];
     [allDataDic[@"kuang"] addObject:[NSString stringWithFormat:@"%.2lf", rH]];
+    [allDataDic[@"kuang"] addObject:[NSString stringWithFormat:@"%.2lf", rH]];
+    [allDataDic[@"kuang"] addObject:[NSString stringWithFormat:@"%.2lf", rW]];
     [allDataDic[@"kuang"] addObject:[NSString stringWithFormat:@"%.2lf", rW]];
     
     //返回
