@@ -51,6 +51,7 @@ typedef struct {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //MARK:初始化cell数据和点击操作
     dataArr = [NSMutableArray array];
     [dataArr addObject:[NSMutableDictionary dictionaryWithDictionary:@{
                          @"name":@"设置计算参数",
@@ -150,12 +151,12 @@ typedef struct {
         [mainScene.rootNode addChildNode:windowNode];
     }}]];
     
-    //上部分视图
+    //MARK:上部分视图
     UIView * upview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, _upView.frame.size.height)];
     [_upView addSubview:upview];
     [_upView bringSubviewToFront:_arButton];
 
-    //3d视图
+    //MARK:3d视图
     mainSCNV = [[SCNView alloc] initWithFrame:upview.bounds];
     [upview addSubview:mainSCNV];
     mainSCNV.playing = YES;
@@ -163,26 +164,30 @@ typedef struct {
     //主场景
     mainScene = [SCNScene scene];
     mainSCNV.scene = mainScene;
-    
-    //初始化门窗计算工具
-    [self setupDoorObj];
-    
-    [_mainTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
-    [_mainTableView setTableFooterView:[[UIView alloc] init]];
-    
+    //3d视图点击事件
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [mainSCNV addGestureRecognizer:tap];
-    
+    //中梃点击通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(zhongTingClick) name:@"WZZZhongTingNodeClick" object:nil];
+    
+    //MARK:初始化门窗计算工具
+    [self setupDoorObj];
+    
+    //MARK:下部分视图
+    [_mainTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
+    [_mainTableView setTableFooterView:[[UIView alloc] init]];
 }
 
+//MARK:中梃点击事件
 - (void)zhongTingClick {
+    //找到第一个窗节点，即根窗体
     WZZWindowNode * rootWindow = [WZZWindowDataHandler shareInstance].allWindows.firstObject;
     
     WZZChangeZhongTingVC * vc = [[WZZChangeZhongTingVC alloc] init];
     __weak WZZChangeZhongTingVC * weakVC = vc;
     __weak WZZInsideNode * weakInside = (WZZInsideNode *)[WZZWindowDataHandler shareInstance].currentTing.superNode;
     
+    //找到当前选中的中梃
     WZZZhongTingNode * zhongTing = [WZZWindowDataHandler shareInstance].currentTing;
     vc.hv = zhongTing.tingHV;
     
@@ -257,6 +262,7 @@ typedef struct {
     [self presentViewController:vc animated:YES completion:nil];
 }
 
+//MARK:重制场景
 - (void)resetNode {
     mainSCNV.scene = mainScene = [SCNScene scene];
     
@@ -266,9 +272,11 @@ typedef struct {
     }];
 }
 
+//MARK:初始化窗体
 - (void)setupWindowNode {
     [self resetNode];
     
+    //测试建议输入1200
     CGFloat wid = _widTF.text.doubleValue;
     CGFloat hei = _heiTF.text.doubleValue;
     
@@ -280,7 +288,7 @@ typedef struct {
     //    WZZWindowNode * node233 = [WZZWindowNode nodeWithLeftHeight:widHei rightHeight:widHei/2 downWidth:widHei hasBorder:YES];
     //    [scene.rootNode addChildNode:node233];
     
-    //矩形
+    //矩形窗体
     WZZWindowNode * node233 = [WZZWindowNode nodeWithHeight:hei width:wid windowBorderType:WZZShapeHandler_WindowBorderType_RootWindowBorder];
 #else
     //多边形
@@ -298,7 +306,7 @@ typedef struct {
     [node233 setPosition:SCNVector3Make(-wid/2.0f, -hei/2.0f, 0)];
 }
 
-//配置计算参数
+//MARK:配置计算参数
 - (void)setupDoorObj {
     DoorWindowCalculationFormulaObjective * doorHandler = [DoorWindowCalculationFormulaObjective share];
     
@@ -332,7 +340,7 @@ typedef struct {
     doorHandler.centreVariable = 9.0f;
 }
 
-//scnview点击
+//MARK:scnview点击
 - (void)handleTap:(UIGestureRecognizer*)gestureRecognize {
     //点击了scnview
     SCNView *scnView = (SCNView *)gestureRecognize.view;
@@ -350,10 +358,12 @@ typedef struct {
         //返回第一个点击对象
         [hitResults enumerateObjectsUsingBlock:^(SCNHitTestResult * _Nonnull result, NSUInteger idx, BOOL * _Nonnull stop) {
             NSLog(@"%@", NSStringFromClass([result.node class]));
+            //是中梃，返回中梃，触发中梃点击事件，跳出
             if ([result.node isKindOfClass:[WZZZhongTingNode class]]) {
                 node = result.node;
                 return ;
             }
+            //是填充处理填充事件
             if ([result.node isKindOfClass:[WZZInsideNode class]]) {
                 WZZInsideNode * clickNode = (WZZInsideNode *)result.node;
                 if (clickNode.nodeLevel > level) {
@@ -363,10 +373,14 @@ typedef struct {
                 }
             }
         }];
+        
+        //触发填充点击
         if ([node isKindOfClass:[WZZInsideNode class]]) {
             [node nodeClick:res];
             NSLog(@">>%zd", [node nodeLevel]);
         }
+        
+        //触发中梃点击
         if ([node isKindOfClass:[WZZZhongTingNode class]]) {
             //中挺点击
             [WZZWindowDataHandler shareInstance].currentTing = node;
@@ -375,7 +389,7 @@ typedef struct {
     }
 }
 
-//创建
+//MARK:创建点击
 - (IBAction)changeC:(id)sender {
     [self.view endEditing:YES];
     [WZZWindowDataHandler resetHandler];
@@ -384,6 +398,7 @@ typedef struct {
     [WZZWindowDataHandler markdownState];
 }
 
+//MARK:截图
 - (UIImage *)snapshot:(UIView *)view {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0);
     [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
@@ -393,10 +408,12 @@ typedef struct {
     return image;
 }
 
+//MARK:改变横竖点击
 - (IBAction)hvChange:(UISwitch *)sender {
     [WZZShapeHandler shareInstance].insideHV = sender.on?WZZInsideNode_H:WZZInsideNode_V;
 }
 
+//MARK:改变操作点击
 - (IBAction)actionClick:(UISegmentedControl *)sender {
     switch (sender.selectedSegmentIndex) {
         case 0:
@@ -437,8 +454,7 @@ typedef struct {
     aBlock();
 }
 
-#pragma mark - 尝试
-
+#pragma mark - 测试，没什么用
 
 - (SCNNode *)starOutline {
     //Show bezier path

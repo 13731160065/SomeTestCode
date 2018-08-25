@@ -106,6 +106,16 @@ typedef enum : NSUInteger {
                                              border:(CGFloat)border;
 
 /**
+ 创建边框，计算内边框位置
+ 
+ @param linkArray 链表数组
+ @param border 边框宽度
+ @return 内边框位置
+ */
++ (NSArray <NSValue *>*)makeBorderWithLinkArray:(WZZLinkedArray *)linkArray
+                                         border:(CGFloat)border;
+
+/**
  测试时快速显示点
 
  @param node 父node
@@ -117,16 +127,6 @@ typedef enum : NSUInteger {
                     color:(UIColor *)color;
 
 #pragma mark - 弃用
-
-/**
- 创建边框，计算内边框位置
- 
- @param linkArray 链表数组
- @param border 边框宽度
- @return 内边框位置
- */
-+ (NSArray <NSValue *>*)makeBorderWithLinkArray:(WZZLinkedArray *)linkArray
-                                         border:(CGFloat)border;
 
 //x创建三角形边框
 + (NSArray <NSValue *>*)makeBorder3WithLinkArray:(WZZLinkedArray *)linkArray

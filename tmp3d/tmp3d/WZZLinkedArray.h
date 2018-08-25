@@ -41,8 +41,19 @@ typedef enum : NSUInteger {
  */
 @property (nonatomic, assign) WZZLinkedObjectIndex indexType;
 
+/**
+ 前驱
+ */
 @property (nonatomic, weak) WZZLinkedObject * lastObj;
+
+/**
+ 后继
+ */
 @property (nonatomic, weak) WZZLinkedObject * nextObj;
+
+/**
+ 源数据
+ */
 @property (nonatomic, weak) id thisObj;
 
 @end
