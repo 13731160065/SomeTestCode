@@ -1,0 +1,5 @@
+./WZZBaseProject/Podfile
+./WZZBaseProject/WZZBaseProject.xcodeproj/project.pbxproj
+./WZZBaseProject/WZZBaseProject.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+./WZZBaseProject/WZZBaseProjectTests/WZZBaseProjectTests.m
+./WZZBaseProject/WZZBaseProjectUITests/WZZBaseProjectUITests.m
