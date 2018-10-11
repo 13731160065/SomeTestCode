@@ -35,8 +35,10 @@
                 NSMutableArray * rowArr = sheetObj.columnArr[col];
                 for (int row = 0; row < rowArr.count; row++) {
                     //设置数据
+                    lxw_format * format = workbook_add_format(book);
+                    format_set_text_wrap(format);//自动换行
                     NSString * str = sheetObj.columnArr[col][row];
-                    worksheet_write_string(sheet, col, row, [str UTF8String], NULL);
+                    worksheet_write_string(sheet, row, col, [str UTF8String], format);
                 }
             }
         }
