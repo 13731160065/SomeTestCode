@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="xlsx.core.min.js"></script>
+
+<!-- <script src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script> -->
+		<script type="text/javascript" src="pinyin.js"></script>
+	</head>
+	<body>
+<!--        <div style="font-size:35px;font-weight:bold">-->
+<!--        <p>ExcelHandler</p>-->
+<!--        </div>-->
+
+		<!-- 选择文件 -->
+		<div>
+			<input type="file" id="excelin"></input>
+		</div>
+		
+		<!-- 姓名颠倒 -->
+		<div>
+			<button onclick="changeXM()">姓名颠倒</button>
+		</div>
+		
+		<!-- 添加后缀 -->
+		<div>
+			<input type="text" id="addSuf"></input><button onclick="addSufClick()">批量添加后缀</button>
+		</div>
+		
+		<!-- 导出 -->
+		<div>
+			<button onclick="exportExcel()">导出</button>
+		</div>
+		
+		<!-- 表格 -->
+		<div>
+			<table id="maintb"></table>
+		</div>
+		
+		<br/>
+	</body>
+	
+	<script type="text/javascript">
+
+	var arr = new Array();
+
+	var aInput = document.getElementById("excelin");
+	console.log(aInput);
+	aInput.addEventListener("change", function (e) {
+		var files = e.target.files;
+		var fileReader = new FileReader();
+		fileReader.onload = function(ev) {
+			try {
+				var data = ev.target.result,
+					workbook = XLSX.read(data, {
+						type: 'binary'
+					}), // 以二进制流方式读取得到整份excel表格对象
+					persons = []; // 存储获取到的数据
+			} catch (e) {
+				console.log('文件类型不正确');
+				return;
+			}
+
+			// 表格的表格范围，可用于判断表头是否数量是否正确
+			var fromTo = '';
+			// 遍历每张表读取
+			for (var sheet in workbook.Sheets) {
+				if (workbook.Sheets.hasOwnProperty(sheet)) {
+					fromTo = workbook.Sheets[sheet]['!ref'];
+					console.log(fromTo);
+					persons = persons.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
+					// break; // 如果只取第一张表，就取消注释这行
+				}
+			}
+
+			console.log(persons);
+			
+			for (var i = 0; i < persons.length; i++) { 
+				var name = persons[i]["姓名"];
+				var map = new Map();
+				map.set("name", name);
+				var pinyin = getPinYin(name);
+				map.set("pinyin", pinyin);
+				map.set("orgPinYin", pinyin);
+				arr.push(map);
+			}
+			
+			//刷新数据
+			reloadTable();
+		};
+
+		// 以二进制方式打开文件
+		fileReader.readAsBinaryString(files[0]);
+	});
+	
+	//刷新数据
+	function reloadTable() {
+		var tab = document.getElementById("maintb");
+		
+            var html = "";
+		for (var i = 0; i < arr.length; i++) {
+			html += "<tr>";
+			var tdic = arr[i];
+			html = html+"<td>"+tdic.get("name")+"</td>";
+			html = html+"<td>"+"<input type='text' id='tableInput"+i+"' value='"+tdic.get("pinyin")+"'></input>"+"</td>";//tdic.get("pinyin")
+			html += "</tr>";
+		}
+		
+		tab.innerHTML = html;
+	}
+	
+	//点击事件------------------------------------
+	
+	//添加后缀
+	function addSufClick() {
+		if (!arr.length) {
+			alert("数据为空");
+			return;
+		}
+		for (var i = 0; i < arr.length; i++) {
+			var sufTF = document.getElementById("addSuf");
+			var inputObj = document.getElementById("tableInput"+i);
+			var tdic = arr[i];
+			tdic.set("pinyin", inputObj.value+sufTF.value);
+		}
+		reloadTable();
+	}
+	
+	//姓名颠倒
+	function changeXM() {
+		if (!arr.length) {
+			alert("数据为空");
+			return;
+		}
+		for (var i = 0; i < arr.length; i++) {
+			var tdic = arr[i];
+			var name = tdic.get("name");
+			var xing = name.substring(0, 1);
+			var ming = name.substring(1);
+			var pinyin = getPinYin(ming+xing);
+			tdic.set("pinyin", pinyin);
+			reloadTable();
+		}
+		reloadTable();
+	}
+	
+	//导出Excel
+	function exportExcel() {
+		if (!arr.length) {
+			alert("数据为空");
+			return;
+		}
+		var jsonArr = new Array();
+ 
+		//遍历arr处理数据
+		for (var i = 0; i < arr.length; i++) {
+			var aObj = arr[i]; 
+			var name = aObj.get("name");
+			var pinyin = aObj.get("pinyin");
+			var aArr = new Array();
+
+			aArr.push(name);
+			aArr.push(pinyin);
+			jsonArr.push(aArr);
+		}
+
+		const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };//这里的数据是用来定义导出的格式类型
+//		var data = JSON.stringify(jsonArr);
+		const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
+		wb.Sheets['Sheet1'] = XLSX.utils.json_to_sheet(jsonArr);//通过json_to_sheet转成单页(Sheet)数据
+		
+		saveAs(new Blob([s2ab(XLSX.write(wb, wopts))], { type: "application/octet-stream" }), "ExportExcel" + '.' + (wopts.bookType=="biff2"?"xls":wopts.bookType));
+	}
+	
+	function s2ab(s) {
+		if (typeof ArrayBuffer !== 'undefined') {
+			var buf = new ArrayBuffer(s.length);
+			var view = new Uint8Array(buf);
+			for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+			return buf;
+		} else {
+			var buf = new Array(s.length);
+			for (var i = 0; i != s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+			return buf;
+		}
+	}
+	
+	//如果使用 FileSaver.js 就不要同时使用以下函数
+	function saveAs(obj, fileName) {//当然可以自定义简单的下载文件实现方式 
+		var tmpa = document.createElement("a");
+		tmpa.download = fileName || "下载";
+		tmpa.href = URL.createObjectURL(obj); //绑定a标签
+		tmpa.click(); //模拟点击实现下载
+		setTimeout(function () { //延时释放
+			URL.revokeObjectURL(obj); //用URL.revokeObjectURL()来释放这个object URL
+		}, 100);
+	}
+	
+	</script>
+</html>
