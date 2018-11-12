@@ -168,7 +168,7 @@
 		const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };//这里的数据是用来定义导出的格式类型
 //		var data = JSON.stringify(jsonArr);
 		const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-		wb.Sheets['Sheet1'] = XLSX.utils.json_to_sheet(jsonArr);//通过json_to_sheet转成单页(Sheet)数据
+		wb.Sheets['Sheet1'] = XLSX.utils.json_to_sheet(jsonArr, {skipHeader: true});//通过json_to_sheet转成单页(Sheet)数据
 		
 		saveAs(new Blob([s2ab(XLSX.write(wb, wopts))], { type: "application/octet-stream" }), "ExportExcel" + '.' + (wopts.bookType=="biff2"?"xls":wopts.bookType));
 	}
