@@ -12,3 +12,5 @@
 **ExcelHandler**，是一个Excel处理的demo
 
 **WZZExcelDemo**，是一个Excel处理的demo
+
+**wzrymoney.py**，是王者刷金币脚本
